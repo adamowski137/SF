@@ -2,12 +2,12 @@
 
 int main()
 {
-	const int width = 1280;
-	const int height = 800;
-	const int ui_width = 300;
+    const int width = 1600;
+    const int height = 900;
+    const int ui_width = 580;
 
-	SpringSimApp app(width, height, ui_width);
-	app.loop();
+    SpringSimApp app(width, height, ui_width);
+    app.loop();
 
-	return 0;
+    return 0;
 }

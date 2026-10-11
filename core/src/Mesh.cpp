@@ -59,7 +59,7 @@ std::shared_ptr<Mesh> Mesh::createSimpleMesh(const std::vector<float>& vertices,
 
 void Mesh::updateMesh(const std::vector<float>& vertices, const std::vector<unsigned>& indices)
 {
-	if (maxVertexBufferSize > vertices.size() * sizeof(float) && maxIndexBufferSize > indices.size() * sizeof(unsigned))
+	if (maxVertexBufferSize >= vertices.size() * sizeof(float) && maxIndexBufferSize >= indices.size() * sizeof(unsigned))
 	{
 		Call(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());

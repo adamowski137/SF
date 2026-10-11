@@ -1,5 +1,13 @@
 add_executable(sim_01
     main.cpp
+    MathParser.hpp
+    MathParser.cpp
+    SpringPhysics.hpp
+    SpringPhysics.cpp
+    PlotWidget.hpp
+    PlotWidget.cpp
+    SpringMeshGenerator.hpp
+    SpringMeshGenerator.cpp
     SpringSimApp.hpp
     SpringSimApp.cpp
     SpringSimUI.hpp

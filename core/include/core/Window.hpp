@@ -22,6 +22,10 @@ public:
 	int getViewportWidth() const { return width - ui_width; }
 	int getHeight() const { return height; }
 	int getUiWidth() const { return ui_width; }
+	void setUiWidth(int w) {
+		ui_width = w;
+		handleWindowResize(width, height);
+	}
 
 	bool shouldClose() const;
 	bool shouldDraw() const;
