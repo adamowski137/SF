@@ -1,34 +1,38 @@
 #pragma once
 
-#include <string>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <matrix/matrix.hpp>
 
-struct GLFWwindow;
-
-namespace Core {
+class InputHandler;
 
 class Window {
+	GLFWwindow* window = nullptr;
+	int width, height, ui_width;
+
 public:
-  Window(int width, int height, const std::string &title);
-  ~Window();
+	Window(int width, int height, int ui_width = 300, const char* title = "SF Scene");
+	~Window();
 
-  // Prevent copying to ensure safe resource management (RAII)
-  Window(const Window &) = delete;
-  Window &operator=(const Window &) = delete;
+	// Prevent copying
+	Window(const Window&) = delete;
+	Window& operator=(const Window&) = delete;
 
-  bool shouldClose() const;
-  void pollEvents() const;
-  void swapBuffers() const;
+	int getWidth() const { return width; }
+	int getViewportWidth() const { return width - ui_width; }
+	int getHeight() const { return height; }
+	int getUiWidth() const { return ui_width; }
 
-  int getWidth() const { return m_Width; }
-  int getHeight() const { return m_Height; }
+	bool shouldClose() const;
+	bool shouldDraw() const;
+	void finishFrame();
 
-  GLFWwindow *getNativeWindow() const { return m_Window; }
+	void setupCallbacks(InputHandler& handler);
+	void handleWindowResize(int width, int height);
 
-private:
-  int m_Width;
-  int m_Height;
-  std::string m_Title;
-  GLFWwindow *m_Window = nullptr;
+	Matrix4x4<float> getProjectionMatrix() const;
+	Matrix4x4<float> getInverseProjectionMatrix() const;
+
+	GLFWwindow* getNativeWindow() const { return window; }
+	GLFWwindow* getWindow() const { return window; }
 };
-
-} // namespace Core

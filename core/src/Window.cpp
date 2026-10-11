@@ -1,68 +1,100 @@
 #include "core/Window.hpp"
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "core/InputHandler.hpp"
 #include <iostream>
-#include <print>
 #include <stdexcept>
 
-namespace Core {
+Window::Window(int width, int height, int ui_width, const char* title)
+	: width(width), height(height), ui_width(ui_width)
+{
+	if (!glfwInit()) {
+		throw std::runtime_error("Failed to initialize GLFW!");
+	}
 
-Window::Window(int width, int height, const std::string &title)
-    : m_Width(width), m_Height(height), m_Title(title) {
-
-  if (!glfwInit()) {
-    throw std::runtime_error("Failed to initialize GLFW!");
-  }
-
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
 #ifdef __APPLE__
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Required for macOS
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-  m_Window =
-      glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), nullptr, nullptr);
-  if (!m_Window) {
-    glfwTerminate();
-    throw std::runtime_error("Failed to create GLFW window!");
-  }
+	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	if (!window) {
+		glfwTerminate();
+		throw std::runtime_error("Failed to create GLFW window!");
+	}
 
-  glfwMakeContextCurrent(m_Window);
+	glfwMakeContextCurrent(window);
 
-  glewExperimental = GL_TRUE;
-  GLenum err = glewInit();
-  if (err != GLEW_OK) {
-    std::cerr << "GLEW Error: " << glewGetErrorString(err) << std::endl;
-    glfwDestroyWindow(m_Window);
-    glfwTerminate();
-    throw std::runtime_error("Failed to initialize GLEW!");
-  }
+	glewExperimental = GL_TRUE;
+	GLenum err = glewInit();
+	if (err != GLEW_OK) {
+		std::cerr << "GLEW Error: " << glewGetErrorString(err) << std::endl;
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		throw std::runtime_error("Failed to initialize GLEW!");
+	}
 
-  glViewport(0, 0, m_Width, m_Height);
-
-  glfwSetWindowUserPointer(m_Window, this);
-  glfwSetFramebufferSizeCallback(
-      m_Window, [](GLFWwindow *window, int width, int height) {
-        auto *self = static_cast<Window *>(glfwGetWindowUserPointer(window));
-        self->m_Width = width;
-        self->m_Height = height;
-        glViewport(0, 0, width, height);
-      });
+	int vpWidth = width - ui_width;
+	if (vpWidth > 0 && height > 0)
+		glViewport(0, 0, vpWidth, height);
 }
 
-Window::~Window() {
-  if (m_Window) {
-    glfwDestroyWindow(m_Window);
-  }
-  glfwTerminate();
+Window::~Window()
+{
+	if (window) {
+		glfwDestroyWindow(window);
+		window = nullptr;
+	}
+	glfwTerminate();
 }
 
-bool Window::shouldClose() const { return glfwWindowShouldClose(m_Window); }
+bool Window::shouldClose() const
+{
+	return glfwWindowShouldClose(window);
+}
 
-void Window::pollEvents() const { glfwPollEvents(); }
+bool Window::shouldDraw() const
+{
+	return !glfwGetWindowAttrib(window, GLFW_ICONIFIED);
+}
 
-void Window::swapBuffers() const { glfwSwapBuffers(m_Window); }
+void Window::finishFrame()
+{
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+}
 
-} // namespace Core
+void Window::setupCallbacks(InputHandler& handler)
+{
+	glfwSetWindowUserPointer(window, &handler);
+	glfwSetScrollCallback(window, InputHandler::scrollCallback);
+	glfwSetCursorPosCallback(window, InputHandler::cursorPosCallback);
+
+	handler.setWindowPointer(this);
+	glfwSetFramebufferSizeCallback(window, InputHandler::framebufferSizeCallback);
+}
+
+void Window::handleWindowResize(int w, int h)
+{
+	this->width = w;
+	this->height = h;
+	int vpWidth = w - ui_width;
+	if (vpWidth > 0 && h > 0)
+		glViewport(0, 0, vpWidth, h);
+}
+
+Matrix4x4<float> Window::getProjectionMatrix() const
+{
+	int vpWidth = getViewportWidth();
+	float aspect = (height > 0 && vpWidth > 0) ? (float)vpWidth / (float)height : 1.0f;
+	return Matrix4x4<float>::perspectiveRH(3.14159265f / 3.0f, aspect, 0.1f, 1000.f);
+}
+
+Matrix4x4<float> Window::getInverseProjectionMatrix() const
+{
+	int vpWidth = getViewportWidth();
+	float aspect = (height > 0 && vpWidth > 0) ? (float)vpWidth / (float)height : 1.0f;
+	return Matrix4x4<float>::inversePerspectiveRH(3.14159265f / 3.0f, aspect, 0.1f, 100.f);
+}

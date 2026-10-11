@@ -1,9 +1,13 @@
-#include <core/Window.hpp>
-#include <iostream>
+#include "core/App.hpp"
 
-int main() {
-  Core::Window w(1024, 768, "SF 01");
-  while (!w.shouldClose()) {
-  }
-  return 0;
+int main()
+{
+	const int width = 1280;
+	const int height = 800;
+	const int ui_width = 300;
+
+	App app(width, height, ui_width);
+	app.loop();
+
+	return 0;
 }
