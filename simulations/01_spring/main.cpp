@@ -1,4 +1,4 @@
-#include "core/App.hpp"
+#include "SpringSimApp.hpp"
 
 int main()
 {
@@ -6,7 +6,7 @@ int main()
 	const int height = 800;
 	const int ui_width = 300;
 
-	App app(width, height, ui_width);
+	SpringSimApp app(width, height, ui_width);
 	app.loop();
 
 	return 0;

@@ -43,8 +43,9 @@ void UI::endImGuiFrame()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UI::renderSimpleSceneUI(Window& window, float& cubeSize, float cubeColor[3], float lightPos[3])
+void UI::renderUI(Window& window)
 {
+	// Default base implementation: empty or simple info
 	const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoTitleBar |
 		ImGuiWindowFlags_NoResize |
@@ -53,30 +54,8 @@ void UI::renderSimpleSceneUI(Window& window, float& cubeSize, float cubeColor[3]
 	ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.getViewportWidth()), 0.0f));
 	ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window.getWidth() - window.getViewportWidth()), static_cast<float>(window.getHeight())));
 
-	ImGui::Begin("Controls", nullptr, windowFlags);
-	ImGui::Dummy(ImVec2(0.f, 10.f));
-
-	ImGui::Text("SF Engine - Core Foundation");
+	ImGui::Begin("Info", nullptr, windowFlags);
 	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-
-	renderSepAndSpace();
-
-	ImGui::Text("Cube Properties");
-	ImGui::SliderFloat("Size", &cubeSize, 0.1f, 5.0f);
-	ImGui::ColorEdit3("Color", cubeColor);
-
-	renderSepAndSpace();
-
-	ImGui::Text("Lighting");
-	ImGui::SliderFloat3("Light Position", lightPos, -20.0f, 20.0f);
-
-	renderSepAndSpace();
-
-	ImGui::Text("Controls Help:");
-	ImGui::BulletText("Right Click + Drag: Rotate Camera");
-	ImGui::BulletText("Right Click + Shift + Drag: Pan Camera");
-	ImGui::BulletText("Mouse Scroll: Zoom");
-
 	ImGui::End();
 }
 

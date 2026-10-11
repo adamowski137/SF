@@ -8,18 +8,21 @@ class Window;
 class InputHandler;
 
 class UI {
+protected:
 	bool imGuiInitialized = false;
 	int width;
 
 public:
 	UI(int width);
-	~UI();
+	virtual ~UI();
 
 	void initImGui(GLFWwindow* window);
 	void startImGuiFrame();
 	void endImGuiFrame();
 
-	void renderSimpleSceneUI(Window& window, float& cubeSize, float cubeColor[3], float lightPos[3]);
+	// Pure virtual or customizable method for derived project UIs
+	virtual void renderUI(Window& window);
 
-	void renderSepAndSpace();
+	static void renderSepAndSpace();
+	int getWidth() const { return width; }
 };

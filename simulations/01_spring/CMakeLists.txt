@@ -1,4 +1,15 @@
-add_executable(sim_01 main.cpp)
+add_executable(sim_01
+    main.cpp
+    SpringSimApp.hpp
+    SpringSimApp.cpp
+    SpringSimUI.hpp
+    SpringSimUI.cpp
+)
+
+target_include_directories(sim_01
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 target_link_libraries(sim_01
     PRIVATE 

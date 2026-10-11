@@ -1,18 +1,16 @@
 #include "core/App.hpp"
-#include "core/MeshGenerator.hpp"
 #include <iostream>
 
 GLFWApplication::GLFWApplication()
 {
-	// glfwInit is called in Window constructor
 }
 
 GLFWApplication::~GLFWApplication()
 {
 }
 
-App::App(int width, int height, int ui_width)
-	: window(width, height, ui_width, "SF - Green Cube Scene"), ui(ui_width)
+App::App(int width, int height, int ui_width, const std::string& title)
+	: window(width, height, ui_width, title.c_str()), ui(std::make_unique<UI>(ui_width))
 {
 	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << "\n";
 
@@ -25,13 +23,10 @@ App::App(int width, int height, int ui_width)
 		glViewport(0, 0, vpWidth, height);
 
 	window.setupCallbacks(inputHandler);
-	ui.initImGui(window.getNativeWindow());
+	ui->initImGui(window.getNativeWindow());
 
-	// Initial camera orientation
 	camera.rotate(-3.14159265f / 4.0f, -3.14159265f / 6.0f);
-
 	renderer = std::make_shared<Renderer>();
-	cubeMesh = MeshGenerator::GetCubeMesh();
 
 	glClearColor(0.12f, 0.12f, 0.14f, 1.0f);
 }
@@ -40,11 +35,23 @@ App::~App()
 {
 }
 
+void App::init()
+{
+}
+
+void App::update(float dt)
+{
+	(void)dt;
+}
+
 void App::loop()
 {
+	init();
+
 	while (!window.shouldClose())
 	{
 		processInput();
+		update(0.016f);
 		render();
 		window.finishFrame();
 	}
@@ -56,23 +63,22 @@ void App::render()
 
 	if (window.shouldDraw())
 	{
-		ui.startImGuiFrame();
-
 		renderer->setupCommonUniforms(camera, window);
-		renderer->setLighting(
-			Vector4<float>(lightPos[0], lightPos[1], lightPos[2], 1.0f),
-			camera.getPosition()
-		);
 
-		// Render the green cube with Phong lighting
-		Matrix4x4<float> model = Matrix4x4<float>::scale(cubeSize, cubeSize, cubeSize);
-		Vector4<float> color(cubeColor[0], cubeColor[1], cubeColor[2], 1.0f);
-		renderer->drawMeshPhong(cubeMesh, model, color);
+		renderScene();
 
-		// Render UI
-		ui.renderSimpleSceneUI(window, cubeSize, cubeColor, lightPos);
-		ui.endImGuiFrame();
+		if (ui)
+		{
+			ui->startImGuiFrame();
+			ui->renderUI(window);
+			ui->endImGuiFrame();
+		}
 	}
+}
+
+void App::renderScene()
+{
+	// Base implementation does nothing
 }
 
 void App::processInput()
