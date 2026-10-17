@@ -183,17 +183,7 @@ void SpringSimUI::renderControlsPanel() {
         physics.reset();
     }
 
-    // Numerical Integrator Selection
-    const char* integratorNames[] = {
-        "Explicit Euler",
-        "Semi-Implicit Euler",
-        "Central Difference (from PDF)",
-        "Runge-Kutta 4 (RK4)"
-    };
-    int curIntegrator = static_cast<int>(physics.integrator);
-    if (ImGui::Combo("Integrator", &curIntegrator, integratorNames, 4)) {
-        physics.integrator = static_cast<IntegratorType>(curIntegrator);
-    }
+    ImGui::TextDisabled("Integrator: Euler");
 
     renderSepAndSpace();
 
