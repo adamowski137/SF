@@ -126,3 +126,62 @@ Dla $x(0)=1$, $v(0)=0$, $m=c=1$ oraz $w(t)=f_3$ ($A=1$, $\varphi=0$) porównano 
 
 Pliki graficzne pokazują położenie $x(t)$, prędkość i przyspieszenie; nie zawierają jednego wspólnego wykresu $x(t)$, $w(t)$ oraz $w(t)-x(t)$. Dla stale powtarzanego przebiegu prostokątnego warunek $|w(t)-x(t)|<0{,}1$ dla każdego $t>T$ nie może być spełniony: przy zmianie znaku $w(t)$ jego wartość skacze, podczas gdy położenie masy $x(t)$ jest ciągłe, więc błąd ponownie przekracza próg przy każdym przełączeniu. Można natomiast wyznaczyć czas zaniku stanu przejściowego, porównując kolejne okresy odpowiedzi, albo zmienić kryterium na błąd mierzony poza chwilami przełączeń.
 
+## Pytanie 5 - Charakterystyka częstotliwościowa
+
+Dla $x(0)=1$, $v(0)=0$, $m=c=A_0=1$, $\varphi_0=0$ oraz wymuszenia $w(t)=A_0\sin(\omega t+\varphi_0)$ równanie ruchu ma postać
+
+$$
+\ddot{x}+k\dot{x}+x=\sin(\omega t).
+$$
+
+Po zaniku składowej przejściowej odpowiedź ustalona również jest sinusoidalna:
+
+$$
+x_{ust}(t)=A(\omega)\sin\bigl(\omega t+\varphi(\omega)\bigr).
+$$
+
+Transmitancja układu dla wymuszenia harmonicznego wynosi
+
+$$
+H(i\omega)=\frac{X}{W}=\frac{1}{1-\omega^2+i k\omega}.
+$$
+
+Z jej modułu i argumentu otrzymujemy zależności amplitudy oraz fazy:
+
+$$
+A(\omega)=\frac{1}{\sqrt{(1-\omega^2)^2+(k\omega)^2}},
+\qquad
+\varphi(\omega)=-\operatorname{atan2}(k\omega,\,1-\omega^2).
+$$
+
+Faza jest podana w radianach względem fazy wymuszenia ($\varphi_0=0$); znak ujemny oznacza opóźnienie położenia masy. Warunki początkowe wpływają na przebieg przejściowy, ale nie na powyższą odpowiedź ustaloną.
+
+Dla $k<\sqrt{2}$ maksimum amplitudy występuje przy
+
+$$
+\omega_r=\sqrt{1-\frac{k^2}{2}},
+\qquad
+A(\omega_r)=\frac{1}{k\sqrt{1-\frac{k^2}{4}}}.
+$$
+
+| $k$ | $\omega_r$ [rad/s] | $A(\omega_r)$ |
+|---:|---:|---:|
+| 0,1 | 0,9975 | 10,0125 |
+| 0,5 | 0,9354 | 2,0656 |
+| 1 | 0,7071 | 1,1547 |
+
+![Charakterystyka amplitudowa dla k = 0,1, 0,5 i 1](zadanie5/amplituda-czestotliwosc.svg)
+*Rys. 26. Amplituda odpowiedzi ustalonej w funkcji częstotliwości wymuszenia. Każdy panel ma osobną skalę amplitudy; zaznaczone punkty wskazują częstotliwości rezonansowe.*
+
+Zależność maksymalnej amplitudy rezonansowej od tłumienia wynosi
+
+$$
+A(\omega_r)(k)=\frac{1}{k\sqrt{1-\frac{k^2}{4}}},
+\qquad 0<k\leq\sqrt{2}.
+$$
+
+Gdy $k\to 0^+$, amplituda rezonansowa rośnie bez ograniczeń. Przy $k=\sqrt{2}$ częstotliwość rezonansowa spada do zera, a maksimum wynosi $A=1$. Dla $k>\sqrt{2}$ nie występuje już niezerowa częstotliwość rezonansowa; maksimum charakterystyki amplitudowej przypada na $\omega=0$.
+
+![Maksymalna amplituda rezonansowa w funkcji tłumienia](zadanie5/amplituda-rezonansowa-tlumienie.svg)
+*Rys. 27. Maksymalna amplituda $A(\omega_r)$ w zależności od tłumienia $k$ dla $m=c=A_0=1$.*
+

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="790" viewBox="0 0 1000 790" role="img" aria-labelledby="title desc">
+  <title id="title">Amplituda odpowiedzi ustalonej w funkcji częstotliwości</title>
+  <desc id="desc">Charakterystyki amplitudowe dla tłumienia k równego 0,1, 0,5 i 1. Zaznaczono częstotliwości rezonansowe.</desc>
+  <rect width="1000" height="790" fill="#ffffff"/>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#202733">
+    <text x="500" y="34" text-anchor="middle" font-size="22" font-weight="600">Odpowiedź częstotliwościowa, A₀ = m = c = 1</text>
+    <text x="500" y="775" text-anchor="middle" font-size="15">Częstotliwość wymuszenia ω [rad/s]</text>
+    <text x="24" y="390" text-anchor="middle" font-size="15" transform="rotate(-90 24 390)">Amplituda ustalona A(ω)</text>
+  </g>
+  <g stroke="#dce1e7" stroke-width="1">
+    <path d="M110 220H900 M110 191.4H900 M110 162.9H900 M110 134.3H900 M110 105.7H900 M110 77.1H900"/>
+    <path d="M110 70V220 M307.5 70V220 M505 70V220 M702.5 70V220 M900 70V220"/>
+    <path d="M110 465H900 M110 430.9H900 M110 396.8H900 M110 362.7H900 M110 328.6H900"/>
+    <path d="M110 315V465 M307.5 315V465 M505 315V465 M702.5 315V465 M900 315V465"/>
+    <path d="M110 710H900 M110 681.2H900 M110 652.3H900 M110 623.5H900 M110 594.6H900 M110 565.8H900"/>
+    <path d="M110 560V710 M307.5 560V710 M505 560V710 M702.5 560V710 M900 560V710"/>
+  </g>
+  <g stroke="#526071" stroke-width="1.4" fill="none">
+    <path d="M110 70V220H900 M110 315V465H900 M110 560V710H900"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#46515f" text-anchor="end">
+    <text x="100" y="224">0</text><text x="100" y="195">2</text><text x="100" y="167">4</text><text x="100" y="138">6</text><text x="100" y="110">8</text><text x="100" y="81">10</text>
+    <text x="100" y="469">0</text><text x="100" y="435">0,5</text><text x="100" y="401">1</text><text x="100" y="367">1,5</text><text x="100" y="333">2</text>
+    <text x="100" y="714">0</text><text x="100" y="685">0,25</text><text x="100" y="656">0,5</text><text x="100" y="628">0,75</text><text x="100" y="599">1</text><text x="100" y="570">1,25</text>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#46515f" text-anchor="middle">
+    <text x="110" y="238">0</text><text x="307.5" y="238">0,5</text><text x="505" y="238">1</text><text x="702.5" y="238">1,5</text><text x="900" y="238">2</text>
+    <text x="110" y="483">0</text><text x="307.5" y="483">0,5</text><text x="505" y="483">1</text><text x="702.5" y="483">1,5</text><text x="900" y="483">2</text>
+    <text x="110" y="728">0</text><text x="307.5" y="728">0,5</text><text x="505" y="728">1</text><text x="702.5" y="728">1,5</text><text x="900" y="728">2</text>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="600">
+    <text x="120" y="61" fill="#0077b6">k = 0,1</text>
+    <text x="120" y="306" fill="#d66a00">k = 0,5</text>
+    <text x="120" y="551" fill="#21867a">k = 1</text>
+  </g>
+  <g fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5">
+    <polyline stroke="#0077b6" points="110,205.71 189,205.12 268,203.01 347,197.77 426,181.27 465.5,152.04 485.25,115 495.13,89.29 504.01,76.96 505,77.14 514.88,92.29 524.75,122.57 544.5,159.74 584,188.67 663,205.27 742,210.89 821,213.64 900,215.24"/>
+    <polyline stroke="#d66a00" points="110,396.82 189,394.36 268,386.05 347,368.52 426,338.32 465.5,325.43 479.48,324.07 505,328.64 584,373.36 663,407.59 742,426.14 821,436.77 900,443.45"/>
+    <polyline stroke="#21867a" points="110,594.62 189,592.33 268,586.02 347,578.47 389.3,576.76 426,578.47 505,594.62 584,619.72 663,642.03 742,658.37 821,669.85 900,678"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="2">
+    <circle cx="504.01" cy="76.96" r="5" fill="#0077b6"/>
+    <circle cx="479.48" cy="324.07" r="5" fill="#d66a00"/>
+    <circle cx="389.3" cy="576.76" r="5" fill="#21867a"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#5c6673">
+    <text x="615" y="92">● ωᵣ ≈ 0,9975 rad/s; A ≈ 10,0125</text>
+    <text x="615" y="341">● ωᵣ ≈ 0,9354 rad/s; A ≈ 2,0656</text>
+    <text x="515" y="593">● ωᵣ ≈ 0,7071 rad/s; A ≈ 1,1547</text>
+    <text x="500" y="755" text-anchor="middle">Każdy panel ma osobną skalę amplitudy; punkty oznaczają maksima A(ω).</text>
+  </g>
+</svg>

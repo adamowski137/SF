@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="570" viewBox="0 0 1000 570" role="img" aria-labelledby="title desc">
+  <title id="title">Maksymalna amplituda rezonansowa w funkcji tłumienia</title>
+  <desc id="desc">Wykres A przy częstotliwości rezonansowej w funkcji tłumienia k, dla znormalizowanych m, c i A0 równych jeden. Zaznaczone punkty k równe 0,1, 0,5 i 1.</desc>
+  <rect width="1000" height="570" fill="#ffffff"/>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#202733">
+    <text x="500" y="34" text-anchor="middle" font-size="22" font-weight="600">Maksimum amplitudy rezonansowej</text>
+    <text x="500" y="545" text-anchor="middle" font-size="15">Współczynnik tłumienia k</text>
+    <text x="25" y="255" text-anchor="middle" font-size="15" transform="rotate(-90 25 255)">A(ωᵣ)</text>
+  </g>
+  <g stroke="#dce1e7" stroke-width="1">
+    <path d="M110 430H900 M110 342.5H900 M110 255H900 M110 167.5H900 M110 80H900"/>
+    <path d="M110 80V430 M218.97 80V430 M327.93 80V430 M436.9 80V430 M545.86 80V430 M654.83 80V430 M763.79 80V430"/>
+  </g>
+  <g stroke="#526071" stroke-width="1.4" fill="none">
+    <path d="M110 80V430H900"/>
+    <path d="M879.73 80V430" stroke-dasharray="5 5"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#46515f" text-anchor="end">
+    <text x="100" y="434">0</text><text x="100" y="347">5</text><text x="100" y="259">10</text><text x="100" y="172">15</text><text x="100" y="84">20</text>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#46515f" text-anchor="middle">
+    <text x="110" y="450">0</text><text x="218.97" y="450">0,2</text><text x="327.93" y="450">0,4</text><text x="436.9" y="450">0,6</text><text x="545.86" y="450">0,8</text><text x="654.83" y="450">1</text><text x="763.79" y="450">1,2</text><text x="879.73" y="450">√2</text>
+  </g>
+  <polyline fill="none" stroke="#1677a8" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="137.24,80 164.48,254.78 191.72,313.03 218.97,342.06 273.45,371.01 327.93,385.35 382.41,393.85 436.9,399.43 491.38,403.32 545.86,406.13 600.34,408.23 654.83,409.79 709.31,410.95 763.79,411.77 818.28,412.29 872.76,412.5 879.73,412.5"/>
+  <g fill="#1677a8" stroke="#ffffff" stroke-width="2">
+    <circle cx="164.48" cy="254.78" r="6"/>
+    <circle cx="382.41" cy="393.85" r="6"/>
+    <circle cx="654.83" cy="409.79" r="6"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#263746">
+    <text x="180" y="242">k = 0,1; A(ωᵣ) ≈ 10,0125</text>
+    <text x="400" y="378">k = 0,5; A(ωᵣ) ≈ 2,0656</text>
+    <text x="668" y="394">k = 1; A(ωᵣ) ≈ 1,1547</text>
+    <text x="859" y="69" text-anchor="end">k → 0⁺: A(ωᵣ) → ∞</text>
+    <text x="879.73" y="475" text-anchor="middle">k = √2</text>
+    <text x="500" y="510" text-anchor="middle" fill="#5c6673">Dla k ≥ √2 nie występuje niezerowa częstotliwość rezonansowa.</text>
+  </g>
+</svg>
