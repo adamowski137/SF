@@ -17,10 +17,7 @@ add_subdirectory(third_party/glfw)
 add_subdirectory(third_party/glm)
 add_subdirectory(third_party/glew)
 
-# --- 2. ADD MATH3D LIBRARY ---
-add_subdirectory(math3d)
-
-# --- 3. ADD CORE LIBRARY SUBDIRECTORY ---
+# --- 2. ADD CORE LIBRARY SUBDIRECTORY ---
 add_subdirectory(core)
 
 # --- 4. ADD SIMULATION APPLICATIONS ---

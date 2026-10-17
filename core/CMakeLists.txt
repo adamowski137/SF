@@ -39,7 +39,6 @@ target_include_directories(core_lib
 target_link_libraries(core_lib
     PUBLIC
         glm::glm
-        math3d
         glfw
         libglew_static
         opengl32

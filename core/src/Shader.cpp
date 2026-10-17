@@ -3,14 +3,16 @@
 #include "core/error.hpp"
 #include <iostream>
 
+#include <glm/gtc/type_ptr.hpp>
+
 Shader::Shader(int programId) { this->shader = programId; }
 
 Shader::~Shader() { if(shader) Call(glDeleteProgram(shader)); }
 
-void Shader::setUniformMat4fv(const std::string& name, const Matrix4x4<float>& matrix)
+void Shader::setUniformMat4fv(const std::string& name, const glm::mat4& matrix)
 {
 	bind();
-	Call(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, &matrix[0][0]));
+	Call(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
 void Shader::setIntArray(const std::string& name, std::vector<int> arr)
@@ -21,19 +23,31 @@ void Shader::setIntArray(const std::string& name, std::vector<int> arr)
 
 void Shader::bind() const { Call(glUseProgram(shader)); }
 
-void Shader::setUniformVec4f(const std::string& name, const Vector4<float>& v)
+void Shader::setUniformVec4f(const std::string& name, const glm::vec4& v)
 {
 	bind();
 	Call(glUniform4f(GetUniformLocation(name), v.x, v.y, v.z, v.w));
 }
 
-void Shader::setUniformVec3f(const std::string& name, const Vector4<float>& v)
+void Shader::setUniformVec3f(const std::string& name, const glm::vec3& v)
 {
 	bind();
 	Call(glUniform3f(GetUniformLocation(name), v.x, v.y, v.z));
 }
 
-void Shader::setUniformVec2f(const std::string& name, const Vector4<float>& v)
+void Shader::setUniformVec3f(const std::string& name, const glm::vec4& v)
+{
+	bind();
+	Call(glUniform3f(GetUniformLocation(name), v.x, v.y, v.z));
+}
+
+void Shader::setUniformVec2f(const std::string& name, const glm::vec2& v)
+{
+	bind();
+	Call(glUniform2f(GetUniformLocation(name), v.x, v.y));
+}
+
+void Shader::setUniformVec2f(const std::string& name, const glm::vec4& v)
 {
 	bind();
 	Call(glUniform2f(GetUniformLocation(name), v.x, v.y));

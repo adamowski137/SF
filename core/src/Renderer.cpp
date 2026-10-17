@@ -36,7 +36,16 @@ void Renderer::setupCommonUniforms(Camera& camera, Window& window)
 	}
 }
 
-void Renderer::setLighting(const Vector4<float>& lightPos, const Vector4<float>& cameraPos)
+void Renderer::setLighting(const glm::vec3& lightPos, const glm::vec3& cameraPos)
+{
+	auto phong = shaderManager.get("phong");
+	if (phong) {
+		phong->setUniformVec3f("lightPos", lightPos);
+		phong->setUniformVec3f("cameraPos", cameraPos);
+	}
+}
+
+void Renderer::setLighting(const glm::vec4& lightPos, const glm::vec4& cameraPos)
 {
 	auto phong = shaderManager.get("phong");
 	if (phong) {
@@ -54,14 +63,14 @@ Renderer::Renderer()
 void Renderer::drawLines(const std::shared_ptr<Mesh>& mesh_)
 {
 	shaderManager.get("default")->bind();
-	shaderManager.get("default")->setUniformMat4fv("model", Matrix4x4<float>::identity());
-	shaderManager.get("default")->setUniformVec4f("color", {0.5f, 0.f, 0.5f});
+	shaderManager.get("default")->setUniformMat4fv("model", glm::mat4(1.0f));
+	shaderManager.get("default")->setUniformVec4f("color", glm::vec4(0.5f, 0.f, 0.5f, 1.0f));
 	glLineWidth(3.f);
 	mesh_->bind();
 	Call(glDrawElements(GL_LINES, mesh_->getIndiciesCount(), GL_UNSIGNED_INT, nullptr));
 }
 
-void Renderer::drawMeshPhong(const std::shared_ptr<Mesh>& mesh_, const Matrix4x4<float>& modelMatrix, const Vector4<float>& color)
+void Renderer::drawMeshPhong(const std::shared_ptr<Mesh>& mesh_, const glm::mat4& modelMatrix, const glm::vec4& color)
 {
 	shaderManager.get("phong")->bind();
 	shaderManager.get("phong")->setUniformMat4fv("model", modelMatrix);

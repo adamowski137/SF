@@ -2,7 +2,6 @@
 #include <memory>
 #include <vector>
 #include "core/Mesh.hpp"
-#include <matrix/matrix.hpp>
 
 class SpringMeshGenerator {
 public:

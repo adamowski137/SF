@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <matrix/matrix.hpp>
+#include <glm/glm.hpp>
 
 class InputHandler;
 
@@ -34,8 +34,8 @@ public:
 	void setupCallbacks(InputHandler& handler);
 	void handleWindowResize(int width, int height);
 
-	Matrix4x4<float> getProjectionMatrix() const;
-	Matrix4x4<float> getInverseProjectionMatrix() const;
+	glm::mat4 getProjectionMatrix() const;
+	glm::mat4 getInverseProjectionMatrix() const;
 
 	GLFWwindow* getNativeWindow() const { return window; }
 	GLFWwindow* getWindow() const { return window; }

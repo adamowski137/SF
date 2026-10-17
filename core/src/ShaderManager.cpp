@@ -13,7 +13,7 @@ std::shared_ptr<Shader> ShaderManager::get(const std::string& name) const
 	return it == this->shaders.end() ? nullptr : it->second;
 }
 
-void ShaderManager::setColor(const Vector4<float>& color)
+void ShaderManager::setColor(const glm::vec4& color)
 {
 	for (auto& shader : entityShaders)
 		shader->setUniformVec4f("color", color);

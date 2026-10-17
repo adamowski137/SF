@@ -1,9 +1,10 @@
 #include "core/Camera.hpp"
 #include <cmath>
+#include <glm/gtc/matrix_transform.hpp>
 
-Vector4<float> Camera::getPosition()
+glm::vec3 Camera::getPosition()
 {
-	return target + Vector4<float>(
+	return target + glm::vec3(
 		radius * cosf(pitch) * sinf(yaw),
 		radius * sinf(pitch),
 		radius * cosf(pitch) * cosf(yaw)
@@ -14,15 +15,11 @@ void Camera::recalculateVectors()
 {
 	position = this->getPosition();
 
-	// RH style
-	front = (position - target);
-	front.normalize();
+	front = glm::normalize(position - target);
 
-	right = Vector4<float>(0.f, 1.f, 0.f).cross(front);
-	right.normalize();
+	right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), front));
 
-	up = front.cross(right);
-	up.normalize();
+	up = glm::normalize(glm::cross(front, right));
 
 	needRecalculation = false;
 }
@@ -37,28 +34,26 @@ Camera::Camera() : target{0.f, 0.f, 0.f}, yaw(0.f), pitch(0.f), radius{5.f}
 	this->recalculateVectors();
 }
 
-Matrix4x4<float> Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix()
 {
 	if (needRecalculation)
 		this->recalculateVectors();
-	return Matrix4x4<float>::viewRH(up, right, front, position);
+	return glm::lookAtRH(position, target, up);
 }
 
-Matrix4x4<float> Camera::getInverseViewMatrix()
+glm::mat4 Camera::getInverseViewMatrix()
 {
-	if (needRecalculation)
-		this->recalculateVectors();
-	return Matrix4x4<float>::inverseViewRH(up, right, front, position);
+	return glm::inverse(getViewMatrix());
 }
 
-Vector4<float> Camera::getUpVector()
+glm::vec3 Camera::getUpVector()
 {
 	if (needRecalculation)
 		this->recalculateVectors();
 	return this->up;
 }
 
-Vector4<float> Camera::getRightVector()
+glm::vec3 Camera::getRightVector()
 {
 	if (needRecalculation)
 		this->recalculateVectors();

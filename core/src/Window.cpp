@@ -2,6 +2,7 @@
 #include "core/InputHandler.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <glm/gtc/matrix_transform.hpp>
 
 Window::Window(int width, int height, int ui_width, const char* title)
 	: width(width), height(height), ui_width(ui_width)
@@ -85,16 +86,14 @@ void Window::handleWindowResize(int w, int h)
 		glViewport(0, 0, vpWidth, h);
 }
 
-Matrix4x4<float> Window::getProjectionMatrix() const
+glm::mat4 Window::getProjectionMatrix() const
 {
 	int vpWidth = getViewportWidth();
 	float aspect = (height > 0 && vpWidth > 0) ? (float)vpWidth / (float)height : 1.0f;
-	return Matrix4x4<float>::perspectiveRH(3.14159265f / 3.0f, aspect, 0.1f, 1000.f);
+	return glm::perspectiveRH(3.14159265f / 3.0f, aspect, 0.1f, 1000.f);
 }
 
-Matrix4x4<float> Window::getInverseProjectionMatrix() const
+glm::mat4 Window::getInverseProjectionMatrix() const
 {
-	int vpWidth = getViewportWidth();
-	float aspect = (height > 0 && vpWidth > 0) ? (float)vpWidth / (float)height : 1.0f;
-	return Matrix4x4<float>::inversePerspectiveRH(3.14159265f / 3.0f, aspect, 0.1f, 100.f);
+	return glm::inverse(getProjectionMatrix());
 }

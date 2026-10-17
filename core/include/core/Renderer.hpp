@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <glm/glm.hpp>
 #include "core/ShaderManager.hpp"
 #include "core/Mesh.hpp"
 
@@ -20,7 +21,8 @@ class Renderer {
 public:
 	Renderer();
 	void setupCommonUniforms(Camera& camera, Window& window);
-	void setLighting(const Vector4<float>& lightPos, const Vector4<float>& cameraPos);
+	void setLighting(const glm::vec3& lightPos, const glm::vec3& cameraPos);
+	void setLighting(const glm::vec4& lightPos, const glm::vec4& cameraPos);
 	void drawLines(const std::shared_ptr<Mesh>& mesh_);
-	void drawMeshPhong(const std::shared_ptr<Mesh>& mesh_, const Matrix4x4<float>& modelMatrix, const Vector4<float>& color);
+	void drawMeshPhong(const std::shared_ptr<Mesh>& mesh_, const glm::mat4& modelMatrix, const glm::vec4& color);
 };

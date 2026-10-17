@@ -11,6 +11,6 @@ class ShaderManager
 public:
 	void add(const std::string& name, const std::shared_ptr<Shader>& shader, bool isSelectable = true);
 	std::shared_ptr<Shader> get(const std::string& name) const;
-	void setColor(const Vector4<float>& color);
+	void setColor(const glm::vec4& color);
 	std::unordered_map<std::string, std::shared_ptr<Shader>>& getShaders();
 };
