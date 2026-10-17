@@ -159,12 +159,12 @@ void SpringMeshGenerator::generateSpringVertices(
             unsigned int i3 = ring2 + j;
 
             indices.push_back(i0);
-            indices.push_back(i3);
             indices.push_back(i1);
+            indices.push_back(i3);
 
             indices.push_back(i1);
-            indices.push_back(i3);
             indices.push_back(i2);
+            indices.push_back(i3);
         }
     }
 
@@ -180,8 +180,8 @@ void SpringMeshGenerator::generateSpringVertices(
     for (int j = 0; j < M; j++) {
         int next_j = (j + 1) % M;
         indices.push_back(topCenterIdx);
-        indices.push_back(j);
         indices.push_back(next_j);
+        indices.push_back(j);
     }
 
     // Bottom cap
@@ -197,8 +197,8 @@ void SpringMeshGenerator::generateSpringVertices(
     for (int j = 0; j < M; j++) {
         int next_j = (j + 1) % M;
         indices.push_back(bottomCenterIdx);
-        indices.push_back(lastRingStart + next_j);
         indices.push_back(lastRingStart + j);
+        indices.push_back(lastRingStart + next_j);
     }
 }
 
