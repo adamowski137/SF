@@ -8,6 +8,7 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
     : UI(width), physics(phys), visual(vis),
       forcesPlot("Forces Plot"),
       kinematicsPlot("Kinematics Plot"),
+    positionExtensionPlot("Position and Spring Extension"),
       trajectoryPlot("Phase Space Trajectory", true),
       errorPlot("Simulation vs Exact Solution")
 {
@@ -21,6 +22,9 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
     kinematicsPlot.addSeries("x(t) Position", IM_COL32(245, 245, 255, 255), 2.0f);
     kinematicsPlot.addSeries("xt(t) Velocity", IM_COL32(50, 230, 120, 255), 2.0f);
     kinematicsPlot.addSeries("xtt(t) Acceleration", IM_COL32(60, 180, 255, 255), 2.0f);
+    positionExtensionPlot.addSeries("x(t) Position", IM_COL32(245, 245, 255, 255), 2.0f);
+    positionExtensionPlot.addSeries("w(t) Free end", IM_COL32(230, 90, 230, 255), 2.0f);
+    positionExtensionPlot.addSeries("w(t) - x(t) Spring extension", IM_COL32(255, 170, 40, 255), 2.0f);
 
     // Initialize trajectory plot series (Phase space: x on horizontal, v on vertical)
     trajectoryPlot.addSeries("Phase curve (x, xt)", IM_COL32(255, 75, 75, 255), 2.0f);
@@ -52,6 +56,10 @@ void SpringSimUI::updatePlotData() {
     populate(kinematicsPlot, 0, [](const SimPoint& p) { return ImVec2(p.t, p.x); });
     populate(kinematicsPlot, 1, [](const SimPoint& p) { return ImVec2(p.t, p.v); });
     populate(kinematicsPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.a); });
+
+    populate(positionExtensionPlot, 0, [](const SimPoint& p) { return ImVec2(p.t, p.x); });
+    populate(positionExtensionPlot, 1, [](const SimPoint& p) { return ImVec2(p.t, p.w); });
+    populate(positionExtensionPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.w - p.x); });
 
     populate(trajectoryPlot, 0, [](const SimPoint& p) { return ImVec2(p.x, p.v); });
 
@@ -220,8 +228,14 @@ void SpringSimUI::renderGraphsPanel() {
         }
 
         if (ImGui::BeginTabItem("Kinematics [x, xt, xtt]")) {
-            ImGui::Text("Position x(t), Velocity xt(t) and Acceleration xtt(t):");
+            ImGui::Text("Position x(t), Velocity xt(t), and Acceleration xtt(t):");
             kinematicsPlot.render(ImVec2(-1.0f, 240.0f));
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Position & Spring Extension [x, w, w-x]")) {
+            ImGui::Text("Position x(t), free end w(t), and spring extension w(t) - x(t):");
+            positionExtensionPlot.render(ImVec2(-1.0f, 240.0f));
             ImGui::EndTabItem();
         }
 
