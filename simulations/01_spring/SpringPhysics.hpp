@@ -3,7 +3,6 @@
 #include <string>
 #include <memory>
 #include <cmath>
-#include "MathParser.hpp"
 
 enum class IntegratorType {
     Euler = 0,
@@ -17,8 +16,7 @@ enum class FunctionType {
     Step = 1,          // f2 = (t >= t_step) ? A : 0
     Square = 2,        // f3 = sgn(A * sin(omega * t + phi))
     Sine = 3,          // f4 = A * sin(omega * t + phi))
-    Custom = 4,        // Custom math expression via MathParser
-    BangBang_Ex6 = 5   // Time-optimal acceleration profile (Exercise 6)
+    BangBang_Ex6 = 4   // Time-optimal acceleration profile (Exercise 6)
 };
 
 struct SignalFunction {
@@ -27,17 +25,6 @@ struct SignalFunction {
     float omega = 1.0f;
     float phi = 0.0f;
     float stepTime = 0.0f;
-    std::string expression = "0";
-    mutable MathParser parser;
-
-    SignalFunction() {
-        parser.setExpression(expression);
-    }
-
-    void updateExpression(const std::string& expr) {
-        expression = expr;
-        parser.setExpression(expr);
-    }
 
     float evaluate(float t, float m = 1.0f, float c = 1.0f, float k = 0.0f) const;
 };

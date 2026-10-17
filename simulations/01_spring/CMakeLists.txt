@@ -1,7 +1,5 @@
 add_executable(sim_01
     main.cpp
-    MathParser.hpp
-    MathParser.cpp
     SpringPhysics.hpp
     SpringPhysics.cpp
     PlotWidget.hpp

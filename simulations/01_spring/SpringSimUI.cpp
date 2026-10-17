@@ -52,9 +52,6 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, float& inCubeSize, floa
 
     // Initialize Settling time plot series
     settlingPlot.addSeries("T_settle(k)", IM_COL32(255, 200, 50, 255), 2.0f);
-
-    std::strncpy(wExprBuf, physics.wFunc.expression.c_str(), sizeof(wExprBuf) - 1);
-    std::strncpy(hExprBuf, physics.hFunc.expression.c_str(), sizeof(hExprBuf) - 1);
 }
 
 void SpringSimUI::updatePlotData() {
@@ -169,11 +166,6 @@ void SpringSimUI::renderUI(Window& window) {
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem("muParser Formula Test")) {
-            renderFormulaParserPanel();
-            ImGui::EndTabItem();
-        }
-
         ImGui::EndTabBar();
     }
 
@@ -250,30 +242,22 @@ void SpringSimUI::renderControlsPanel() {
 
     // Free End Displacement w(t)
     ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.9f, 1.0f), "Free End Function w(t)");
-    const char* funcNames[] = {
+    const char* wFuncNames[] = {
         "Constant (f1 = A)",
         "Step (f2: 0 for t<0, A for t>=0)",
         "Square wave (f3 = sgn(A*sin(wt+phi)))",
         "Sinusoidal (f4 = A*sin(wt+phi))",
-        "Custom Formula (MathParser)",
         "Optimal Bang-Bang (Ex 6)"
     };
     int wTypeIdx = static_cast<int>(physics.wFunc.type);
-    if (ImGui::Combo("w(t) Type", &wTypeIdx, funcNames, 6)) {
+    if (ImGui::Combo("w(t) Type", &wTypeIdx, wFuncNames, 5)) {
         physics.wFunc.type = static_cast<FunctionType>(wTypeIdx);
     }
-    if (physics.wFunc.type != FunctionType::BangBang_Ex6 && physics.wFunc.type != FunctionType::Custom) {
+    if (physics.wFunc.type != FunctionType::BangBang_Ex6) {
         ImGui::SliderFloat("w Amplitude A", &physics.wFunc.amplitude, -10.0f, 10.0f);
         if (physics.wFunc.type == FunctionType::Square || physics.wFunc.type == FunctionType::Sine) {
             ImGui::SliderFloat("w Frequency w", &physics.wFunc.omega, 0.1f, 15.0f);
             ImGui::SliderFloat("w Phase phi", &physics.wFunc.phi, -3.1415f, 3.1415f);
-        }
-    } else if (physics.wFunc.type == FunctionType::Custom) {
-        if (ImGui::InputText("w(t) Expression", wExprBuf, sizeof(wExprBuf))) {
-            physics.wFunc.updateExpression(wExprBuf);
-        }
-        if (!physics.wFunc.parser.isValid()) {
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Error: %s", physics.wFunc.parser.getLastError().c_str());
         }
     }
 
@@ -281,23 +265,20 @@ void SpringSimUI::renderControlsPanel() {
 
     // External Force Function h(t)
     ImGui::TextColored(ImVec4(1.0f, 0.6f, 0.2f, 1.0f), "Outer Field Force h(t)");
+    const char* hFuncNames[] = {
+        "Constant (f1 = A)",
+        "Step (f2: 0 for t<0, A for t>=0)",
+        "Square wave (f3 = sgn(A*sin(wt+phi)))",
+        "Sinusoidal (f4 = A*sin(wt+phi))"
+    };
     int hTypeIdx = static_cast<int>(physics.hFunc.type);
-    if (ImGui::Combo("h(t) Type", &hTypeIdx, funcNames, 5)) {
+    if (ImGui::Combo("h(t) Type", &hTypeIdx, hFuncNames, 4)) {
         physics.hFunc.type = static_cast<FunctionType>(hTypeIdx);
     }
-    if (physics.hFunc.type != FunctionType::Custom) {
-        ImGui::SliderFloat("h Amplitude A", &physics.hFunc.amplitude, -20.0f, 20.0f);
-        if (physics.hFunc.type == FunctionType::Square || physics.hFunc.type == FunctionType::Sine) {
-            ImGui::SliderFloat("h Frequency w", &physics.hFunc.omega, 0.1f, 15.0f);
-            ImGui::SliderFloat("h Phase phi", &physics.hFunc.phi, -3.1415f, 3.1415f);
-        }
-    } else {
-        if (ImGui::InputText("h(t) Expression", hExprBuf, sizeof(hExprBuf))) {
-            physics.hFunc.updateExpression(hExprBuf);
-        }
-        if (!physics.hFunc.parser.isValid()) {
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "Error: %s", physics.hFunc.parser.getLastError().c_str());
-        }
+    ImGui::SliderFloat("h Amplitude A", &physics.hFunc.amplitude, -20.0f, 20.0f);
+    if (physics.hFunc.type == FunctionType::Square || physics.hFunc.type == FunctionType::Sine) {
+        ImGui::SliderFloat("h Frequency w", &physics.hFunc.omega, 0.1f, 15.0f);
+        ImGui::SliderFloat("h Phase phi", &physics.hFunc.phi, -3.1415f, 3.1415f);
     }
 
     renderSepAndSpace();
@@ -578,42 +559,4 @@ void SpringSimUI::renderExercisesPanel() {
 
         ImGui::EndTabBar();
     }
-}
-
-void SpringSimUI::renderFormulaParserPanel() {
-    ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.3f, 0.8f, 1.0f, 1.0f), "muParser / Formula Evaluator Test");
-    ImGui::TextWrapped("Test custom mathematical expressions for free end displacement w(t) and outer force h(t).");
-    ImGui::Spacing();
-
-    ImGui::InputText("Expression f(t)", formulaTestBuf, sizeof(formulaTestBuf));
-
-    static float testT = 1.0f;
-    ImGui::SliderFloat("Evaluation Time t", &testT, 0.0f, 10.0f);
-
-    if (ImGui::Button("Evaluate Expression")) {
-        MathParser testParser;
-        if (testParser.setExpression(formulaTestBuf)) {
-            formulaTestResult = testParser.evaluate(testT);
-            formulaTestStatus = "Valid syntax";
-        } else {
-            formulaTestStatus = "Syntax Error: " + testParser.getLastError();
-        }
-    }
-
-    if (!formulaTestStatus.empty()) {
-        if (formulaTestStatus.find("Error") != std::string::npos) {
-            ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "%s", formulaTestStatus.c_str());
-        } else {
-            ImGui::TextColored(ImVec4(0.3f, 1, 0.3f, 1), "%s -> f(%.2f) = %.6f",
-                formulaTestStatus.c_str(), testT, formulaTestResult);
-        }
-    }
-
-    ImGui::Separator();
-    ImGui::Text("Supported Syntax:");
-    ImGui::BulletText("Variables: t, pi, e");
-    ImGui::BulletText("Operators: +, -, *, /, ^");
-    ImGui::BulletText("Functions: sin, cos, tan, asin, acos, atan");
-    ImGui::BulletText("Advanced: sinh, cosh, tanh, exp, log/ln, sqrt, abs, sgn/sign, step");
 }

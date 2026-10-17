@@ -40,13 +40,6 @@ public:
     std::vector<ResonanceCurve> ex5Curves;
     bool hasEx5Results = false;
 
-    // Custom formula inputs
-    char wExprBuf[256] = "0";
-    char hExprBuf[256] = "0";
-    char formulaTestBuf[256] = "sin(2 * pi * t) * exp(-0.1 * t)";
-    std::string formulaTestStatus;
-    double formulaTestResult = 0.0;
-
 public:
     SpringSimUI(int width, SpringPhysics& phys, float& inCubeSize, float* inCubeColor, float* inLightPos);
     ~SpringSimUI() override = default;
@@ -58,5 +51,4 @@ private:
     void renderControlsPanel();
     void renderGraphsPanel();
     void renderExercisesPanel();
-    void renderFormulaParserPanel();
 };

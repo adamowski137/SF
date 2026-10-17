@@ -18,9 +18,6 @@ float SignalFunction::evaluate(float t, float m, float c, float k) const {
         case FunctionType::Sine:
             return amplitude * std::sin(omega * t + phi);
 
-        case FunctionType::Custom:
-            return static_cast<float>(parser.evaluate(static_cast<double>(t)));
-
         case FunctionType::BangBang_Ex6: {
             float x_opt = 0.0f, v_opt = 0.0f, a_opt = 0.0f, w_opt = 0.0f;
             SpringPhysics::getExercise6OptimalTrajectory(t, x_opt, v_opt, a_opt, w_opt, m, c, k);
