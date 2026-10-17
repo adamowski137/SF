@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 3.20)
+if (POLICY CMP0141)
+    cmake_policy(SET CMP0141 NEW)
+    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>")
+endif()
+
 project(Simulation VERSION 1.0.0 LANGUAGES CXX)
 
 if (MSVC)
     set(CMAKE_CXX26_STANDARD_COMPILE_OPTION "-std:c++latest")
     set(CMAKE_CXX26_EXTENSION_COMPILE_OPTION "-std:c++latest")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:/Zi>")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:/FS>")
+    add_link_options("$<$<CONFIG:Debug,RelWithDebInfo>:/DEBUG>")
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
