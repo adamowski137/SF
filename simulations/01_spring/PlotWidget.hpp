@@ -19,13 +19,6 @@ public:
     std::string title;
     std::vector<PlotSeries> series;
 
-    bool autoFitX = true;
-    bool autoFitY = true;
-    float manualMinX = 0.0f;
-    float manualMaxX = 10.0f;
-    float manualMinY = -5.0f;
-    float manualMaxY = 5.0f;
-
     // Phase portrait mode (equal aspect, crosshairs at 0, 0)
     bool isPhasePlot = false;
     bool showCrosshairs = true;
@@ -33,10 +26,7 @@ public:
 
     PlotWidget(const std::string& plotTitle, bool phasePlot = false);
 
-    void clearSeries();
     int addSeries(const std::string& name, ImU32 color, float thickness = 1.5f);
-    void setSeriesData(int index, const std::vector<ImVec2>& points);
-
     void render(const ImVec2& size = ImVec2(-1.0f, 220.0f));
 
 private:

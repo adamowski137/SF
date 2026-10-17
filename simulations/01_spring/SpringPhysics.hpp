@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <memory>
 #include <cmath>
 
 enum class FunctionType {
@@ -82,6 +81,8 @@ public:
     float computeExactSolution(float tQuery) const;
 
 private:
-    float computeAcceleration(float curX, float curV, float curT) const;
+    float timeAccumulator = 0.0f;
+
+    void updateDerivedState();
     void recordPoint();
 };

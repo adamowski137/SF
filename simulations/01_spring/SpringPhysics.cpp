@@ -27,11 +27,7 @@ SpringPhysics::SpringPhysics() {
     reset();
 }
 
-void SpringPhysics::reset() {
-    t = 0.0f;
-    x = x0;
-    v = v0;
-
+void SpringPhysics::updateDerivedState() {
     w = wFunc.evaluate(t);
     h = hFunc.evaluate(t);
     f = c * (w - x);
@@ -41,45 +37,32 @@ void SpringPhysics::reset() {
     xe = computeExactSolution(t);
     err = x - xe;
 
+    maxAbsoluteError = std::max(maxAbsoluteError, std::abs(err));
+}
+
+void SpringPhysics::reset() {
+    t = 0.0f;
+    x = x0;
+    v = v0;
     maxAbsoluteError = 0.0f;
+    timeAccumulator = 0.0f;
+
+    updateDerivedState();
 
     history.clear();
     history.reserve(2000);
     recordPoint();
 }
 
-float SpringPhysics::computeAcceleration(float curX, float curV, float curT) const {
-    if (m <= 1e-6f) return 0.0f;
-    float curW = wFunc.evaluate(curT);
-    float curH = hFunc.evaluate(curT);
-    float curF = c * (curW - curX);
-    float curG = -k * curV;
-    return (curF + curG + curH) / m;
-}
-
 void SpringPhysics::step() {
     if (delta <= 1e-6f) return;
 
-    float dt = delta;
-    float a_cur = computeAcceleration(x, v, t);
-
     // Explicit Euler integration
-    x += dt * v;
-    v += dt * a_cur;
-    t += dt;
+    x += delta * v;
+    v += delta * a;
+    t += delta;
 
-    w = wFunc.evaluate(t);
-    h = hFunc.evaluate(t);
-    f = c * (w - x);
-    g = -k * v;
-    a = (m > 1e-6f) ? ((f + g + h) / m) : 0.0f;
-
-    xe = computeExactSolution(t);
-    err = x - xe;
-
-    float absErr = std::abs(err);
-    if (absErr > maxAbsoluteError) maxAbsoluteError = absErr;
-
+    updateDerivedState();
     recordPoint();
 }
 
@@ -89,29 +72,19 @@ void SpringPhysics::update(float realDt) {
     float effectiveDt = realDt * simTimeSpeed;
     if (effectiveDt <= 0.0f) return;
 
-    // Fixed timestep accumulation
-    int stepsToTake = static_cast<int>(std::floor(effectiveDt / delta));
-    // Cap steps per frame to avoid freezing if delta is very small
-    stepsToTake = std::clamp(stepsToTake, 1, 100);
+    timeAccumulator += effectiveDt;
 
-    for (int i = 0; i < stepsToTake; i++) {
+    // Fixed timestep accumulation
+    int stepsTaken = 0;
+    while (timeAccumulator >= delta && stepsTaken < 100) {
         step();
+        timeAccumulator -= delta;
+        stepsTaken++;
     }
 }
 
 void SpringPhysics::recordPoint() {
-    SimPoint pt;
-    pt.t = t;
-    pt.x = x;
-    pt.v = v;
-    pt.a = a;
-    pt.f = f;
-    pt.g = g;
-    pt.h = h;
-    pt.w = w;
-    pt.xe = xe;
-    pt.err = err;
-    history.push_back(pt);
+    history.push_back({ t, x, v, a, f, g, h, w, xe, err });
 
     // Prune history if it exceeds limits
     if (history.size() > maxHistoryPoints) {
@@ -156,5 +129,3 @@ float SpringPhysics::computeExactSolution(float tQuery) const {
         return w0 + C1 * std::exp(r1 * tQuery) + C2 * std::exp(r2 * tQuery);
     }
 }
-
-

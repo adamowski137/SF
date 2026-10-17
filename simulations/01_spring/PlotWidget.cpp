@@ -5,18 +5,6 @@
 
 PlotWidget::PlotWidget(const std::string& plotTitle, bool phasePlot)
     : title(plotTitle), isPhasePlot(phasePlot) {
-    if (isPhasePlot) {
-        manualMinX = -5.0f;
-        manualMaxX = 5.0f;
-        manualMinY = -5.0f;
-        manualMaxY = 5.0f;
-        autoFitX = false;
-        autoFitY = false;
-    }
-}
-
-void PlotWidget::clearSeries() {
-    series.clear();
 }
 
 int PlotWidget::addSeries(const std::string& name, ImU32 color, float thickness) {
@@ -24,61 +12,49 @@ int PlotWidget::addSeries(const std::string& name, ImU32 color, float thickness)
     return static_cast<int>(series.size()) - 1;
 }
 
-void PlotWidget::setSeriesData(int index, const std::vector<ImVec2>& points) {
-    if (index >= 0 && index < static_cast<int>(series.size())) {
-        series[index].points = points;
-    }
-}
-
 void PlotWidget::computeBounds(float& minX, float& maxX, float& minY, float& maxY) const {
-    if (!autoFitX) {
-        minX = manualMinX;
-        maxX = manualMaxX;
-    } else {
-        minX = 1e9f;
-        maxX = -1e9f;
-        for (const auto& s : series) {
-            if (!s.visible || s.points.empty()) continue;
-            for (const auto& pt : s.points) {
-                if (pt.x < minX) minX = pt.x;
-                if (pt.x > maxX) maxX = pt.x;
-            }
+    minX = 1e9f;
+    maxX = -1e9f;
+    minY = 1e9f;
+    maxY = -1e9f;
+
+    for (const auto& s : series) {
+        if (!s.visible || s.points.empty()) continue;
+        for (const auto& pt : s.points) {
+            minX = std::min(minX, pt.x);
+            maxX = std::max(maxX, pt.x);
+            minY = std::min(minY, pt.y);
+            maxY = std::max(maxY, pt.y);
         }
-        if (minX > maxX) { minX = 0.0f; maxX = 10.0f; }
-        else if (std::abs(maxX - minX) < 1e-4f) { minX -= 1.0f; maxX += 1.0f; }
     }
 
-    if (!autoFitY) {
-        minY = manualMinY;
-        maxY = manualMaxY;
-    } else {
-        minY = 1e9f;
-        maxY = -1e9f;
-        for (const auto& s : series) {
-            if (!s.visible || s.points.empty()) continue;
-            for (const auto& pt : s.points) {
-                if (pt.y < minY) minY = pt.y;
-                if (pt.y > maxY) maxY = pt.y;
-            }
-        }
-        if (minY > maxY) { minY = -2.0f; maxY = 2.0f; }
-        else if (std::abs(maxY - minY) < 1e-4f) { minY -= 1.0f; maxY += 1.0f; }
+    if (minX > maxX) {
+        minX = 0.0f;
+        maxX = 10.0f;
+    } else if (std::abs(maxX - minX) < 1e-4f) {
+        minX -= 1.0f;
+        maxX += 1.0f;
     }
 
-    // Add 8% margin if auto-fitting
-    if (autoFitY) {
-        float dy = maxY - minY;
-        minY -= dy * 0.08f;
-        maxY += dy * 0.08f;
+    if (minY > maxY) {
+        minY = -2.0f;
+        maxY = 2.0f;
+    } else if (std::abs(maxY - minY) < 1e-4f) {
+        minY -= 1.0f;
+        maxY += 1.0f;
     }
 
     if (isPhasePlot) {
-        float span = std::max(std::max(std::abs(minX), std::abs(maxX)),
-                              std::max(std::abs(minY), std::abs(maxY)));
-        if (span < 1.0f) span = 1.0f;
-        span = std::ceil(span * 1.15f);
-        minX = -span; maxX = span;
-        minY = -span; maxY = span;
+        float span = std::max({ std::abs(minX), std::abs(maxX), std::abs(minY), std::abs(maxY) });
+        span = std::max(1.0f, std::ceil(span * 1.15f));
+        minX = -span;
+        maxX = span;
+        minY = -span;
+        maxY = span;
+    } else {
+        float dy = maxY - minY;
+        minY -= dy * 0.08f;
+        maxY += dy * 0.08f;
     }
 }
 
@@ -90,7 +66,7 @@ void PlotWidget::render(const ImVec2& size) {
 
     const float labelMarginLeft = 45.0f;
     const float labelMarginBottom = 22.0f;
-    const float marginRigth = 15.0f;
+    const float marginRight = 15.0f;
     const float marginTop = 15.0f;
 
     ImVec2 p0 = ImGui::GetCursorScreenPos();
@@ -104,7 +80,7 @@ void PlotWidget::render(const ImVec2& size) {
 
     // Plot plotting rectangle inside margins
     ImVec2 plotMin = ImVec2(p0.x + labelMarginLeft, p0.y + marginTop);
-    ImVec2 plotMax = ImVec2(p1.x - marginRigth, p1.y - labelMarginBottom);
+    ImVec2 plotMax = ImVec2(p1.x - marginRight, p1.y - labelMarginBottom);
 
     if (plotMax.x <= plotMin.x || plotMax.y <= plotMin.y) {
         ImGui::Dummy(canvasSize);
@@ -167,10 +143,8 @@ void PlotWidget::render(const ImVec2& size) {
     for (const auto& s : series) {
         if (!s.visible || s.points.size() < 2) continue;
 
-        // Draw points polyline
         const size_t nPts = s.points.size();
-        size_t stride = 1;
-        if (nPts > 1200) stride = nPts / 800;
+        size_t stride = (nPts > 1200) ? (nPts / 800) : 1;
 
         ImVec2 prevScr = toScreen(s.points[0].x, s.points[0].y);
         for (size_t i = stride; i < nPts; i += stride) {

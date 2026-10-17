@@ -21,7 +21,7 @@ public:
     std::shared_ptr<Mesh> mountMesh;
     std::shared_ptr<Mesh> rulerMesh;
 
-    SpringMeshGenerator();
+    SpringMeshGenerator() = default;
 
     void init();
     void updateSpring(float w_val, float x_val);
@@ -39,6 +39,9 @@ public:
     }
 
 private:
+    std::vector<float> scratchVerts;
+    std::vector<unsigned int> scratchIndices;
+
     void generateSpringVertices(float yTop, float yBottom, std::vector<float>& vertices, std::vector<unsigned int>& indices);
     void buildRulerMesh();
 };

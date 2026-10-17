@@ -1,10 +1,11 @@
 #include "SpringSimUI.hpp"
 #include "core/Window.hpp"
-#include <cstring>
+#include <glm/gtc/type_ptr.hpp>
 #include <cmath>
+#include <cstdio>
 
-SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, float& inCubeSize, float* inCubeColor, float* inLightPos)
-    : UI(width), physics(phys), cubeSize(inCubeSize), cubeColor(inCubeColor), lightPos(inLightPos),
+SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
+    : UI(width), physics(phys), visual(vis),
       forcesPlot("Forces Plot"),
       kinematicsPlot("Kinematics Plot"),
       trajectoryPlot("Phase Space Trajectory", true),
@@ -34,65 +35,32 @@ void SpringSimUI::updatePlotData() {
     const auto& hist = physics.history;
     if (hist.empty()) return;
 
-    // Build data vectors for forces
-    std::vector<ImVec2> pts_f, pts_g, pts_h, pts_w;
-    pts_f.reserve(hist.size());
-    pts_g.reserve(hist.size());
-    pts_h.reserve(hist.size());
-    pts_w.reserve(hist.size());
+    auto populate = [&](PlotWidget& plot, size_t idx, auto extractor) {
+        auto& pts = plot.series[idx].points;
+        pts.clear();
+        pts.reserve(hist.size());
+        for (const auto& p : hist) {
+            pts.push_back(extractor(p));
+        }
+    };
 
-    // Build data vectors for kinematics
-    std::vector<ImVec2> pts_x, pts_v, pts_a;
-    pts_x.reserve(hist.size());
-    pts_v.reserve(hist.size());
-    pts_a.reserve(hist.size());
+    populate(forcesPlot, 0, [](const SimPoint& p) { return ImVec2(p.t, p.f); });
+    populate(forcesPlot, 1, [](const SimPoint& p) { return ImVec2(p.t, p.g); });
+    populate(forcesPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.h); });
+    populate(forcesPlot, 3, [](const SimPoint& p) { return ImVec2(p.t, p.w); });
 
-    // Build data vectors for trajectory (x, v)
-    std::vector<ImVec2> pts_traj;
-    pts_traj.reserve(hist.size());
+    populate(kinematicsPlot, 0, [](const SimPoint& p) { return ImVec2(p.t, p.x); });
+    populate(kinematicsPlot, 1, [](const SimPoint& p) { return ImVec2(p.t, p.v); });
+    populate(kinematicsPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.a); });
 
-    // Build data vectors for error
-    std::vector<ImVec2> pts_xs, pts_xe, pts_err;
-    pts_xs.reserve(hist.size());
-    pts_xe.reserve(hist.size());
-    pts_err.reserve(hist.size());
+    populate(trajectoryPlot, 0, [](const SimPoint& p) { return ImVec2(p.x, p.v); });
 
-    for (const auto& pt : hist) {
-        pts_f.push_back(ImVec2(pt.t, pt.f));
-        pts_g.push_back(ImVec2(pt.t, pt.g));
-        pts_h.push_back(ImVec2(pt.t, pt.h));
-        pts_w.push_back(ImVec2(pt.t, pt.w));
-
-        pts_x.push_back(ImVec2(pt.t, pt.x));
-        pts_v.push_back(ImVec2(pt.t, pt.v));
-        pts_a.push_back(ImVec2(pt.t, pt.a));
-
-        pts_traj.push_back(ImVec2(pt.x, pt.v));
-
-        pts_xs.push_back(ImVec2(pt.t, pt.x));
-        pts_xe.push_back(ImVec2(pt.t, pt.xe));
-        pts_err.push_back(ImVec2(pt.t, pt.err));
-    }
-
-    forcesPlot.setSeriesData(0, pts_f);
-    forcesPlot.setSeriesData(1, pts_g);
-    forcesPlot.setSeriesData(2, pts_h);
-    forcesPlot.setSeriesData(3, pts_w);
-
-    kinematicsPlot.setSeriesData(0, pts_x);
-    kinematicsPlot.setSeriesData(1, pts_v);
-    kinematicsPlot.setSeriesData(2, pts_a);
-
-    trajectoryPlot.setSeriesData(0, pts_traj);
-
-    errorPlot.setSeriesData(0, pts_xs);
-    errorPlot.setSeriesData(1, pts_xe);
-    errorPlot.setSeriesData(2, pts_err);
+    populate(errorPlot, 0, [](const SimPoint& p) { return ImVec2(p.t, p.x); });
+    populate(errorPlot, 1, [](const SimPoint& p) { return ImVec2(p.t, p.xe); });
+    populate(errorPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.err); });
 }
 
 void SpringSimUI::renderUI(Window& window) {
-    updatePlotData();
-
     const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoResize |
@@ -119,6 +87,7 @@ void SpringSimUI::renderUI(Window& window) {
         }
 
         if (ImGui::BeginTabItem("Live Graphs")) {
+            updatePlotData();
             renderGraphsPanel();
             ImGui::EndTabItem();
         }
@@ -127,6 +96,37 @@ void SpringSimUI::renderUI(Window& window) {
     }
 
     ImGui::End();
+}
+
+void SpringSimUI::renderSignalFunctionControls(
+    const char* title, const char* prefix, const ImVec4& headerColor, SignalFunction& func, float maxAmp)
+{
+    ImGui::TextColored(headerColor, "%s", title);
+    const char* funcNames[] = {
+        "Constant (f1 = A)",
+        "Step (f2: 0 for t<0, A for t>=0)",
+        "Square wave (f3 = sgn(A*sin(wt+phi)))",
+        "Sinusoidal (f4 = A*sin(wt+phi))"
+    };
+    int typeIdx = static_cast<int>(func.type);
+    char comboLabel[64];
+    std::snprintf(comboLabel, sizeof(comboLabel), "%s Type", prefix);
+    if (ImGui::Combo(comboLabel, &typeIdx, funcNames, 4)) {
+        func.type = static_cast<FunctionType>(typeIdx);
+    }
+
+    char ampLabel[64];
+    std::snprintf(ampLabel, sizeof(ampLabel), "%s Amplitude A", prefix);
+    ImGui::SliderFloat(ampLabel, &func.amplitude, -maxAmp, maxAmp);
+
+    if (func.type == FunctionType::Square || func.type == FunctionType::Sine) {
+        char freqLabel[64];
+        char phiLabel[64];
+        std::snprintf(freqLabel, sizeof(freqLabel), "%s Frequency w", prefix);
+        std::snprintf(phiLabel, sizeof(phiLabel), "%s Phase phi", prefix);
+        ImGui::SliderFloat(freqLabel, &func.omega, 0.1f, 15.0f);
+        ImGui::SliderFloat(phiLabel, &func.phi, -3.1415f, 3.1415f);
+    }
 }
 
 void SpringSimUI::renderControlsPanel() {
@@ -188,51 +188,21 @@ void SpringSimUI::renderControlsPanel() {
     renderSepAndSpace();
 
     // Free End Displacement w(t)
-    ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.9f, 1.0f), "Free End Function w(t)");
-    const char* wFuncNames[] = {
-        "Constant (f1 = A)",
-        "Step (f2: 0 for t<0, A for t>=0)",
-        "Square wave (f3 = sgn(A*sin(wt+phi)))",
-        "Sinusoidal (f4 = A*sin(wt+phi))"
-    };
-    int wTypeIdx = static_cast<int>(physics.wFunc.type);
-    if (ImGui::Combo("w(t) Type", &wTypeIdx, wFuncNames, 4)) {
-        physics.wFunc.type = static_cast<FunctionType>(wTypeIdx);
-    }
-    ImGui::SliderFloat("w Amplitude A", &physics.wFunc.amplitude, -10.0f, 10.0f);
-    if (physics.wFunc.type == FunctionType::Square || physics.wFunc.type == FunctionType::Sine) {
-        ImGui::SliderFloat("w Frequency w", &physics.wFunc.omega, 0.1f, 15.0f);
-        ImGui::SliderFloat("w Phase phi", &physics.wFunc.phi, -3.1415f, 3.1415f);
-    }
+    renderSignalFunctionControls("Free End Function w(t)", "w", ImVec4(0.9f, 0.4f, 0.9f, 1.0f), physics.wFunc, 10.0f);
 
     renderSepAndSpace();
 
     // External Force Function h(t)
-    ImGui::TextColored(ImVec4(1.0f, 0.6f, 0.2f, 1.0f), "Outer Field Force h(t)");
-    const char* hFuncNames[] = {
-        "Constant (f1 = A)",
-        "Step (f2: 0 for t<0, A for t>=0)",
-        "Square wave (f3 = sgn(A*sin(wt+phi)))",
-        "Sinusoidal (f4 = A*sin(wt+phi))"
-    };
-    int hTypeIdx = static_cast<int>(physics.hFunc.type);
-    if (ImGui::Combo("h(t) Type", &hTypeIdx, hFuncNames, 4)) {
-        physics.hFunc.type = static_cast<FunctionType>(hTypeIdx);
-    }
-    ImGui::SliderFloat("h Amplitude A", &physics.hFunc.amplitude, -20.0f, 20.0f);
-    if (physics.hFunc.type == FunctionType::Square || physics.hFunc.type == FunctionType::Sine) {
-        ImGui::SliderFloat("h Frequency w", &physics.hFunc.omega, 0.1f, 15.0f);
-        ImGui::SliderFloat("h Phase phi", &physics.hFunc.phi, -3.1415f, 3.1415f);
-    }
+    renderSignalFunctionControls("Outer Field Force h(t)", "h", ImVec4(1.0f, 0.6f, 0.2f, 1.0f), physics.hFunc, 20.0f);
 
     renderSepAndSpace();
 
     // 3D Visual Appearance Controls
     if (ImGui::CollapsingHeader("3D Visual & Lighting Properties")) {
-        ImGui::SliderFloat("Cube Size", &cubeSize, 0.2f, 3.0f);
-        ImGui::ColorEdit3("Cube Color", cubeColor);
-        ImGui::ColorEdit3("Spring Color", springColor);
-        ImGui::SliderFloat3("Light Position", lightPos, -20.0f, 20.0f);
+        ImGui::SliderFloat("Cube Size", &visual.cubeSize, 0.2f, 3.0f);
+        ImGui::ColorEdit3("Cube Color", glm::value_ptr(visual.cubeColor));
+        ImGui::ColorEdit3("Spring Color", glm::value_ptr(visual.springColor));
+        ImGui::SliderFloat3("Light Position", glm::value_ptr(visual.lightPos), -20.0f, 20.0f);
     }
 
     ImGui::Spacing();
@@ -272,4 +242,3 @@ void SpringSimUI::renderGraphsPanel() {
         ImGui::EndTabBar();
     }
 }
-

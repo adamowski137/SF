@@ -1,16 +1,12 @@
 #include "SpringSimApp.hpp"
-#include "SpringSimUI.hpp"
 #include "core/MeshGenerator.hpp"
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
 SpringSimApp::SpringSimApp(int width, int height, int ui_width)
     : App(width, height, ui_width, "SF - 01 Helical Spring & Mass Simulation")
 {
-    auto simUI = std::make_unique<SpringSimUI>(ui_width, physics, cubeSize, cubeColor, lightPos);
-    springUI = simUI.get();
-    ui = std::move(simUI);
+    ui = std::make_unique<SpringSimUI>(ui_width, physics, visual);
     ui->initImGui(window.getNativeWindow());
 
     camera.zoom(-2.5f); // Step back to comfortably frame the entire spring and mass
@@ -37,10 +33,7 @@ void SpringSimApp::update(float dt) {
 }
 
 void SpringSimApp::renderScene() {
-    renderer->setLighting(
-        glm::vec3(lightPos[0], lightPos[1], lightPos[2]),
-        camera.getPosition()
-    );
+    renderer->setLighting(visual.lightPos, camera.getPosition());
 
     // 1. Render Ceiling / Mount Plate at top (displacement w(t))
     float topY = springGen.getTopY(physics.w);
@@ -50,19 +43,14 @@ void SpringSimApp::renderScene() {
 
     // 2. Render 3D Helical Spring
     if (springGen.springMesh) {
-        glm::vec4 sColor(0.85f, 0.85f, 0.90f, 1.0f);
-        if (springUI) {
-            sColor = glm::vec4(springUI->springColor[0], springUI->springColor[1], springUI->springColor[2], 1.0f);
-        }
-        renderer->drawMeshPhong(springGen.springMesh, glm::mat4(1.0f), sColor);
+        renderer->drawMeshPhong(springGen.springMesh, glm::mat4(1.0f), glm::vec4(visual.springColor, 1.0f));
     }
 
     // 3. Render Attached Cube at bottom end (displacement x(t))
-    float cubeCenterY = springGen.getCubeCenterY(physics.x, cubeSize);
+    float cubeCenterY = springGen.getCubeCenterY(physics.x, visual.cubeSize);
     glm::mat4 modelCube = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, cubeCenterY, 0.0f)) *
-                          glm::scale(glm::mat4(1.0f), glm::vec3(cubeSize, cubeSize, cubeSize));
-    glm::vec4 cColor(cubeColor[0], cubeColor[1], cubeColor[2], 1.0f);
-    renderer->drawMeshPhong(cubeMesh, modelCube, cColor);
+                          glm::scale(glm::mat4(1.0f), glm::vec3(visual.cubeSize));
+    renderer->drawMeshPhong(cubeMesh, modelCube, glm::vec4(visual.cubeColor, 1.0f));
 
     // 4. Render Reference Guide Ticks / Ruler
     if (springGen.rulerMesh) {
