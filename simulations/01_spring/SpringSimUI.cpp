@@ -104,12 +104,13 @@ void SpringSimUI::renderSignalFunctionControls(
         "Constant (f1 = A)",
         "Step (f2: 0 for t<0, A for t>=0)",
         "Square wave (f3 = sgn(A*sin(wt+phi)))",
-        "Sinusoidal (f4 = A*sin(wt+phi))"
+        "Sinusoidal (f4 = A*sin(wt+phi))",
+        "Ex6: Optimal Bang-Bang w(t)"
     };
     int typeIdx = static_cast<int>(func.type);
     char comboLabel[64];
     std::snprintf(comboLabel, sizeof(comboLabel), "%s Type", prefix);
-    if (ImGui::Combo(comboLabel, &typeIdx, funcNames, 4)) {
+    if (ImGui::Combo(comboLabel, &typeIdx, funcNames, 5)) {
         func.type = static_cast<FunctionType>(typeIdx);
     }
 
@@ -187,6 +188,21 @@ void SpringSimUI::renderControlsPanel() {
 
     // Free End Displacement w(t)
     renderSignalFunctionControls("Free End Function w(t)", "w", ImVec4(0.9f, 0.4f, 0.9f, 1.0f), physics.wFunc, 10.0f);
+
+    // Exercise 6: Show info and enforce initial conditions for bang-bang control
+    if (physics.wFunc.type == FunctionType::OptimalBangBang) {
+        ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.6f, 1.0f),
+            "Ex6: Time-optimal transfer 0->1 in T=2s");
+        ImGui::TextDisabled(
+            "Bang-bang: accel +1 for t<1, decel -1 for t<2, hold at x=1.\n"
+            "w(t) = x*(t) + (k/c)*v*(t) + (m/c)*a*(t)\n"
+            "Requires x(0)=0, v(0)=0, h(t)=0.");
+        if (physics.x0 != 0.0f || physics.v0 != 0.0f) {
+            physics.x0 = 0.0f;
+            physics.v0 = 0.0f;
+            physics.reset();
+        }
+    }
 
     renderSepAndSpace();
 

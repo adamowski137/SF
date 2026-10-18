@@ -7,7 +7,8 @@ enum class FunctionType {
     Constant = 0,      // f1 = A
     Step = 1,          // f2 = (t >= t_step) ? A : 0
     Square = 2,        // f3 = sgn(A * sin(omega * t + phi))
-    Sine = 3           // f4 = A * sin(omega * t + phi))
+    Sine = 3,          // f4 = A * sin(omega * t + phi))
+    OptimalBangBang = 4 // Exercise 6: time-optimal bang-bang control w(t)
 };
 
 struct SignalFunction {
