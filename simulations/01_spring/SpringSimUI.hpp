@@ -20,6 +20,7 @@ public:
     // Plotting widgets
     PlotWidget forcesPlot;
     PlotWidget kinematicsPlot;
+    PlotWidget positionExtensionPlot;
     PlotWidget trajectoryPlot;
 
 public:

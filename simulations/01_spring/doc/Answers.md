@@ -19,40 +19,40 @@
 
 ### 1. Wpływ masy na drgania
 
-![m1c1k01 — masa 1, sztywność 1, tłumienie 1](m1c1k01.png)
+![m1c1k01 — masa 1, sztywność 1, tłumienie 1](zadanie1/m1c1k01.png)
 *Rys. 1. Układ bazowy $m = 1$, $c = 1$, $k = 1$: referencyjna odpowiedź oscylacyjna.*
 
-![m05c1k01 — masa 0,5, sztywność 1, tłumienie 1](m05c1k01.png)
+![m05c1k01 — masa 0,5, sztywność 1, tłumienie 1](zadanie1/m05c1k01.png)
 *Rys. 2. Układ o małej masie $m = 0{,}5$: drgania są szybsze, a okres krótszy.*
 
-![m2c1k01 — masa 2, sztywność 1, tłumienie 1](m2c1k01.png)
+![m2c1k01 — masa 2, sztywność 1, tłumienie 1](zadanie1/m2c1k01.png)
 *Rys. 3. Układ o większej masie $m = 2$: drgania są wolniejsze, okres wydłuża się, amplituda zanika wolniej.*
 
 ### 2. Wpływ sztywności sprężyny
 
-![m1c05k01 — masa 1, sztywność 0,5, tłumienie 1](m1c05k01.png)
+![m1c05k01 — masa 1, sztywność 0,5, tłumienie 1](zadanie1/m1c05k01.png)
 *Rys. 4. Mniejsza sztywność $c = 0.5$: siła przywracająca jest słabsza, więc ruch jest bardziej rozciągnięty w czasie.*
 
-![m1c2k01 — masa 1, sztywność 2, tłumienie 1](m1c2k01.png)
+![m1c2k01 — masa 1, sztywność 2, tłumienie 1](zadanie1/m1c2k01.png)
 *Rys. 5. Większa sztywność $c = 2$: drgania są szybsze, a układ wraca do równowagi bardziej dynamicznie.*
 
 ### 3. Wpływ tłumienia
 
-![m1c1k05 — masa 1, sztywność 1, tłumienie 5](m1c1k05.png)
+![m1c1k05 — masa 1, sztywność 1, tłumienie 5](zadanie1/m1c1k05.png)
 *Rys. 6. Duże tłumienie $k = 5$: amplituda zanika bardzo szybko, a układ wraca do stanu równowagi bez długotrwałych oscylacji.*
 
 ## Wykresy błędu dla różnych wartości kroku całkowania Δt
 
-![d02 — błąd dla Δt = 0.2](d02.png)
+![d02 — błąd dla Δt = 0.2](zadanie1/d02.png)
 *Rys. 7. Dla $\Delta t = 0{,}2$*
 
-![d01 — błąd dla Δt = 0.1](d01.png)
+![d01 — błąd dla Δt = 0.1](zadanie1/d01.png)
 *Rys. 7. Dla $\Delta t = 0{,}1$*
 
-![d005 — błąd dla Δt = 0.05](d005.png)
+![d005 — błąd dla Δt = 0.05](zadanie1/d005.png)
 *Rys. 8. Dla $\Delta t = 0{,}05$*
 
-![d001 — błąd dla Δt = 0.01](d001.png)
+![d001 — błąd dla Δt = 0.01](zadanie1/d001.png)
 *Rys. 9. Dla $\Delta t = 0{,}01$*
 
 ### Wniosek dotyczący kroku całkowania
@@ -64,19 +64,124 @@ Im mniejszy krok czasu $\Delta t$, tym dokładniejsze jest rozwiązanie numerycz
 
 Dla układu z $m = 1$ oraz $c = 1$ wartość tłumienia krytycznego wyraża się wzorem $k_{kr} = 2\sqrt{mc}$. Po podstawieniu danych otrzymujemy $k_{kr} = 2\sqrt{1\cdot 1} = 2$. Oznacza to, że przy $k = 2$ układ wraca do położenia równowagi w najkrótszym możliwym czasie bez oscylacji. Dla $k < 2$ mamy ruch podkrytyczny (oscylacyjny), natomiast dla $k > 2$ ruch nadkrytyczny (bez drgań, ale wolniejszy).
 
-![k05 — poszukiwanie k_kr dla k = 0.5](k05.png)
+![k05 — poszukiwanie k_kr dla k = 0.5](zadanie2/k05.png)
 *Rys. 10. Dla $k = 0.5$ układ nadal oscyluje, co oznacza stan podkrytyczny.*
 
-![k1 — poszukiwanie k_kr dla k = 1](k1.png)
+![k1 — poszukiwanie k_kr dla k = 1](zadanie2/k1.png)
 *Rys. 11. Dla $k = 1$ oscylacje są nadal widoczne, choć ich amplituda maleje szybciej niż przy mniejszym tłumieniu.*
 
-![k2 — poszukiwanie k_kr dla k = 2](k2.png)
+![k2 — poszukiwanie k_kr dla k = 2](zadanie2/k2.png)
 *Rys. 12. Dla $k = 2$ układ znajduje się w stanie krytycznym — powrót do równowagi jest najszybszy bez przejścia przez zero.*
 
-![k3 — poszukiwanie k_kr dla k = 3](k3.png)
+![k3 — poszukiwanie k_kr dla k = 3](zadanie2/k3.png)
 *Rys. 13. Dla $k = 3$ układ jest nadkrytyczny: brak oscylacji, lecz dojdzenie do równowagi jest wolniejsze niż dla $k = 2$.*
 
-![k5 — poszukiwanie k_kr dla k = 5](k5.png)
+![k5 — poszukiwanie k_kr dla k = 5](zadanie2/k5.png)
 *Rys. 14. Dla $k = 5$ tłumienie jest bardzo duże, więc ruch jest monotoniczny i bardzo wolny.*
 
 Na podstawie tych wykresów można stwierdzić, że tłumienie krytyczne dla $m = 1$ i $c = 1$ wynosi $k_{kr} = 2$.
+
+## Pytanie 3 - Czas ustalania odpowiedzi skokowej
+
+Dla $x(0)=0$, $v(0)=0$, $m=c=1$ i skoku $w(t)=f_2$ o amplitudzie $A=1$ położeniem równowagi jest $x=1$.
+
+![Odpowiedź skokowa A=1 dla k=0.1](zadanie3/a-1k01.png)
+*Rys. 15. Małe tłumienie $k=0{,}1$: widoczne są długotrwałe oscylacje wokół położenia równowagi $x=1$.*
+
+![Odpowiedź skokowa A=1 dla k=1](zadanie3/a-1k1.png)
+*Rys. 16. Dla $k=1$ oscylacje są mocniej tłumione, lecz nadal występuje wyraźne przeregulowanie.*
+
+![Odpowiedź skokowa A=1 dla k=1.5](zadanie3/a-1k15.png)
+*Rys. 17. Dla $k=1{,}5$ przeregulowanie jest niewielkie, a odpowiedź szybko zbliża się do wartości końcowej; ten przypadek daje najkrótszy czas ustalania w badanym zakresie.*
+
+![Odpowiedź skokowa A=1 dla k=2](zadanie3/a-1k2.png)
+*Rys. 18. Dla tłumienia krytycznego $k=2$ odpowiedź dochodzi do równowagi bez oscylacji i przeregulowania.*
+
+![Odpowiedź skokowa A=1 dla k=2.5](zadanie3/a-1k25.png)
+*Rys. 19. Dla $k=2{,}5$ układ jest nadkrytyczny: odpowiedź nie oscyluje, lecz ustala się wolniej.*
+
+![Odpowiedź skokowa A=1 dla k=3](zadanie3/a-1k3.png)
+*Rys. 20. Dla $k=3$ nadmierne tłumienie jeszcze bardziej wydłuża dojście do położenia równowagi.*
+
+Dodanie funkcji skokowej jako wymuszenia (ruchu podstawy) nie zmienia optymalnej wartości tłumienia.
+
+## Pytanie 4 - Odpowiedź na wymuszenie prostokątne
+
+Dla $x(0)=1$, $v(0)=0$, $m=c=1$ oraz $w(t)=f_3$ ($A=1$, $\varphi=0$) porównano przebiegi dla kilku wartości tłumienia. Nazwy plików kodują wartości $k$ w dziesiątych częściach: `k1` oznacza $k=0{,}1$, `k4` — $k=0{,}4$, `k10` — $k=1$, `k15` — $k=1{,}5$, a `k20` — $k=2$.
+
+![Wykres dla k=1](zadanie4/k1.png)
+*Rys. 21. Dla $k=1$ położenie masy wykazuje duże, trwałe oscylacje.*
+
+![Wykres dla k=1](zadanie4/k5.png)
+*Rys. 21. Dla $k=5$ położenie masy wykazuje duże, trwałe oscylacje.*
+
+![Wykres dla k=1](zadanie4/k10.png)
+*Rys. 23. Dla $k=10$ amplituda ruchu jest mniejsza, ale przebieg nadal oscyluje pod wpływem powtarzanego wymuszenia.*
+
+![Wykres dla k=1.5](zadanie4/k15.png)
+*Rys. 24. Dla $k=15$ oscylacje położenia mają mniejszą amplitudę niż przy słabszym tłumieniu.*
+
+![Wykres dla k=2](zadanie4/k20.png)
+*Rys. 25. Dla $k=20$ amplituda położenia jest najmniejsza spośród pokazanych przypadków, lecz ruch nadal jest okresowy.*
+
+Pliki graficzne pokazują położenie $x(t)$, prędkość i przyspieszenie; nie zawierają jednego wspólnego wykresu $x(t)$, $w(t)$ oraz $w(t)-x(t)$. Dla stale powtarzanego przebiegu prostokątnego warunek $|w(t)-x(t)|<0{,}1$ dla każdego $t>T$ nie może być spełniony: przy zmianie znaku $w(t)$ jego wartość skacze, podczas gdy położenie masy $x(t)$ jest ciągłe, więc błąd ponownie przekracza próg przy każdym przełączeniu. Można natomiast wyznaczyć czas zaniku stanu przejściowego, porównując kolejne okresy odpowiedzi, albo zmienić kryterium na błąd mierzony poza chwilami przełączeń.
+
+## Pytanie 5 - Charakterystyka częstotliwościowa
+
+Dla $x(0)=1$, $v(0)=0$, $m=c=A_0=1$, $\varphi_0=0$ oraz wymuszenia $w(t)=A_0\sin(\omega t+\varphi_0)$ równanie ruchu ma postać
+
+$$
+\ddot{x}+k\dot{x}+x=\sin(\omega t).
+$$
+
+Po zaniku składowej przejściowej odpowiedź ustalona również jest sinusoidalna:
+
+$$
+x_{ust}(t)=A(\omega)\sin\bigl(\omega t+\varphi(\omega)\bigr).
+$$
+
+Transmitancja układu dla wymuszenia harmonicznego wynosi
+
+$$
+H(i\omega)=\frac{X}{W}=\frac{1}{1-\omega^2+i k\omega}.
+$$
+
+Z jej modułu i argumentu otrzymujemy zależności amplitudy oraz fazy:
+
+$$
+A(\omega)=\frac{1}{\sqrt{(1-\omega^2)^2+(k\omega)^2}},
+\qquad
+\varphi(\omega)=-\operatorname{atan2}(k\omega,\,1-\omega^2).
+$$
+
+Faza jest podana w radianach względem fazy wymuszenia ($\varphi_0=0$); znak ujemny oznacza opóźnienie położenia masy. Warunki początkowe wpływają na przebieg przejściowy, ale nie na powyższą odpowiedź ustaloną.
+
+Dla $k<\sqrt{2}$ maksimum amplitudy występuje przy
+
+$$
+\omega_r=\sqrt{1-\frac{k^2}{2}},
+\qquad
+A(\omega_r)=\frac{1}{k\sqrt{1-\frac{k^2}{4}}}.
+$$
+
+| $k$ | $\omega_r$ [rad/s] | $A(\omega_r)$ |
+|---:|---:|---:|
+| 0,1 | 0,9975 | 10,0125 |
+| 0,5 | 0,9354 | 2,0656 |
+| 1 | 0,7071 | 1,1547 |
+
+![Charakterystyka amplitudowa dla k = 0,1, 0,5 i 1](zadanie5/amplituda-czestotliwosc.svg)
+*Rys. 26. Amplituda odpowiedzi ustalonej w funkcji częstotliwości wymuszenia. Każdy panel ma osobną skalę amplitudy; zaznaczone punkty wskazują częstotliwości rezonansowe.*
+
+Zależność maksymalnej amplitudy rezonansowej od tłumienia wynosi
+
+$$
+A(\omega_r)(k)=\frac{1}{k\sqrt{1-\frac{k^2}{4}}},
+\qquad 0<k\leq\sqrt{2}.
+$$
+
+Gdy $k\to 0^+$, amplituda rezonansowa rośnie bez ograniczeń. Przy $k=\sqrt{2}$ częstotliwość rezonansowa spada do zera, a maksimum wynosi $A=1$. Dla $k>\sqrt{2}$ nie występuje już niezerowa częstotliwość rezonansowa; maksimum charakterystyki amplitudowej przypada na $\omega=0$.
+
+![Maksymalna amplituda rezonansowa w funkcji tłumienia](zadanie5/amplituda-rezonansowa-tlumienie.svg)
+*Rys. 27. Maksymalna amplituda $A(\omega_r)$ w zależności od tłumienia $k$ dla $m=c=A_0=1$.*
+
