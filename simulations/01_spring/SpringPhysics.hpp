@@ -29,8 +29,6 @@ struct SimPoint {
     float g = 0.0f;    // damping force: -k * v
     float h = 0.0f;    // external force: h(t)
     float w = 0.0f;    // displacement of free end: w(t)
-    float xe = 0.0f;   // exact analytical position
-    float err = 0.0f;  // xs - xe
 };
 
 class SpringPhysics {
@@ -61,14 +59,9 @@ public:
     float g = 0.0f;
     float h = 0.0f;
     float w = 0.0f;
-    float xe = 0.0f;
-    float err = 0.0f;
 
     // Recorded history
     std::vector<SimPoint> history;
-
-    // Analytical exact comparison
-    float maxAbsoluteError = 0.0f;
 
 public:
     SpringPhysics();
@@ -76,9 +69,6 @@ public:
     void reset();
     void step();
     void update(float realDt);
-
-    // Exact analytical solution evaluator
-    float computeExactSolution(float tQuery) const;
 
 private:
     float timeAccumulator = 0.0f;
