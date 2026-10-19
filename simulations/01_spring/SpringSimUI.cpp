@@ -112,7 +112,7 @@ void SpringSimUI::renderSignalFunctionControls(
         "Step (f2: 0 for t<0, A for t>=0)",
         "Square wave (f3 = sgn(A*sin(wt+phi)))",
         "Sinusoidal (f4 = A*sin(wt+phi))",
-        "Ex6: Optimal Bang-Bang w(t)"
+        "Exercise 6: w(t)"
     };
     int typeIdx = static_cast<int>(func.type);
     char comboLabel[64];
