@@ -24,9 +24,8 @@ void SpringSimApp::update(float dt) {
     float realDt = static_cast<float>(curTime - lastFrameTime);
     lastFrameTime = curTime;
 
-    if (realDt <= 0.0f || realDt > 0.1f) {
-        realDt = 0.016f;
-    }
+    if (realDt < 0.0f) realDt = 0.0f;
+    if (realDt > 0.1f) realDt = 0.1f;
 
     physics.update(realDt);
     springGen.updateSpring(physics.w, physics.x);
