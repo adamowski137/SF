@@ -8,7 +8,7 @@ enum class FunctionType {
     Step = 1,
     Square = 2,
     Sine = 3,
-    OptimalBangBang = 4
+    Exercise6 = 4
 };
 
 struct SignalFunction {
@@ -18,7 +18,7 @@ struct SignalFunction {
     float phi = 0.0f;
     float stepTime = 0.0f;
 
-    float evaluate(float t) const;
+    float evaluate(float t, float m = 1.0f, float c = 1.0f, float k = 0.1f) const;
 };
 
 struct SimPoint {

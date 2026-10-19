@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-float SignalFunction::evaluate(float t) const {
+float SignalFunction::evaluate(float t, float m, float c, float k) const {
     switch (type) {
         case FunctionType::Constant:
             return amplitude;
@@ -18,6 +18,24 @@ float SignalFunction::evaluate(float t) const {
         case FunctionType::Sine:
             return amplitude * std::sin(omega * t + phi);
 
+        case FunctionType::Exercise6: {
+            if (t < 0.0f) {
+                return 0.0f;
+            } else if (t < 1.0f) {
+                float x_opt = 0.5f * t * t;
+                float v_opt = t;
+                float a_opt = 1.0f;
+                return (std::abs(c) > 1e-6f) ? (x_opt + (k / c) * v_opt + (m / c) * a_opt) : x_opt;
+            } else if (t <= 2.0f) {
+                float x_opt = -0.5f * t * t + 2.0f * t - 1.0f;
+                float v_opt = 2.0f - t;
+                float a_opt = -1.0f;
+                return (std::abs(c) > 1e-6f) ? (x_opt + (k / c) * v_opt + (m / c) * a_opt) : x_opt;
+            } else {
+                return 1.0f; // Hold at x(T) = 1
+            }
+        }
+
         default:
             return 0.0f;
     }
@@ -28,29 +46,7 @@ SpringPhysics::SpringPhysics() {
 }
 
 void SpringPhysics::updateDerivedState() {
-    // Exercise 6: Optimal bang-bang control computes w(t) from the
-    // time-optimal trajectory x*(t) via the inverted equation of motion:
-    //   w(t) = x(t) + (k/c)*v(t) + (m/c)*a(t)
-    // where x, v, a come from the analytical bang-bang trajectory.
-    if (wFunc.type == FunctionType::OptimalBangBang) {
-        if (t < 0.0f) {
-            w = 0.0f;
-        } else if (t < 1.0f) {
-            float x_opt = 0.5f * t * t;
-            float v_opt = t;
-            float a_opt = 1.0f;
-            w = x_opt + (k / c) * v_opt + (m / c) * a_opt;
-        } else if (t <= 2.0f) {
-            float x_opt = -0.5f * t * t + 2.0f * t - 1.0f;
-            float v_opt = 2.0f - t;
-            float a_opt = -1.0f;
-            w = x_opt + (k / c) * v_opt + (m / c) * a_opt;
-        } else {
-            w = 1.0f; // Hold at x(T) = 1
-        }
-    } else {
-        w = wFunc.evaluate(t);
-    }
+    w = wFunc.evaluate(t, m, c, k);
     h = hFunc.evaluate(t);
     f = c * (w - x);
     g = -k * v;
