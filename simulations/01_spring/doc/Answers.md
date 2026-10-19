@@ -185,3 +185,54 @@ Gdy $k\to 0^+$, amplituda rezonansowa rośnie bez ograniczeń. Przy $k=\sqrt{2}$
 ![Maksymalna amplituda rezonansowa w funkcji tłumienia](zadanie5/amplituda-rezonansowa-tlumienie.svg)
 *Rys. 27. Maksymalna amplituda $A(\omega_r)$ w zależności od tłumienia $k$ dla $m=c=A_0=1$.*
 
+## Pytanie 6 - Optymalna trajektoria ruchu masy i funkcja sterująca $w(t)$
+
+### 1. Wyznaczenie optymalnej trajektorii ruchu masy
+
+Dla dowolnego czasu $t \in [0, \frac{T}{2}]$ prędkość możemy zapisać jako całkę z przyspieszenia od chwili startu ($v(0)=0$). Korzystając z założenia $x_{tt}(\tau) \le 1$:
+$$v(t) = v(0) + \int_0^t x_{tt}(\tau)\,d\tau \le \int_0^t 1\,d\tau = t$$
+
+Z kolei dla drugiej połowy ruchu, czyli $t \in [\frac{T}{2}, T]$, wiemy, że prędkość końcowa musi wynosić $v(T) = 0$. Korzystając z dolnego ograniczenia $x_{tt}(\tau) \ge -1$:
+$$0 = v(T) = v(t) + \int_t^T x_{tt}(\tau)\,d\tau \ge v(t) + \int_t^T (-1)\,d\tau = v(t) - (T - t)$$
+
+Stąd dla drugiej połowy czasu zawsze zachodzi:
+$$v(t) \le T - t$$
+
+Teraz obliczamy całkowitą drogę $x(T) - x(0) = 1$, dzieląc całkę z prędkości na dwie części:
+$$1 = \int_0^T v(t)\,dt = \int_0^{T/2} v(t)\,dt + \int_{T/2}^T v(t)\,dt$$
+
+Wstawiając wyprowadzone wyżej nierówności:
+$$1 \le \int_0^{T/2} t\,dt + \int_{T/2}^T (T - t)\,dt = \left[\frac{1}{2}t^2\right]_0^{T/2} + \left[-\frac{1}{2}(T-t)^2\right]_{T/2}^T = \frac{T^2}{8} + \frac{T^2}{8} = \frac{T^2}{4}$$
+
+Otrzymujemy $1 \le \frac{T^2}{4}$, co daje $T \ge 2$.
+
+Ponieważ w całkach użyliśmy słabych nierówności, minimalną wartość $T = 2$ można osiągnąć wtedy i tylko wtedy, gdy nierówności przechodzą w równości w każdym punkcie przedziału – czyli gdy $x_{tt}(t) = 1$ dla $t \in (0, 1)$ oraz $x_{tt}(t) = -1$ dla $t \in (1, 2)$.
+
+---
+
+### 2. Wyznaczenie szukanej funkcji przemieszczenia $w(t)$
+
+Zakładając brak zewnętrznego pola siłowego, czyli $h(t) = 0$, równanie ruchu ma postać:
+$$m \cdot x_{tt} = c \cdot (w - x) - k \cdot x_t$$
+
+Przekształcając to równanie względem $w(t)$, otrzymujemy funkcję sterującą:
+$$w(t) = x(t) + \frac{m \cdot x_{tt}(t) + k \cdot x_t(t)}{c}$$
+
+Podstawiając wyznaczone wcześniej funkcje $x(t)$, $x_t(t)$ oraz $x_{tt}(t)$ dla poszczególnych przedziałów czasowych, otrzymujemy ostateczny wzór na $w(t)$:
+$$w(t) = \begin{cases} 
+\frac{1}{2}t^2 + \frac{k}{c}t + \frac{m}{c} & \text{dla } 0 \le t < 1 \\ 
+1 - \frac{1}{2}(2 - t)^2 + \frac{k}{c}(2 - t) - \frac{m}{c} & \text{dla } 1 \le t \le 2 \\ 
+1 & \text{dla } t > 2 
+\end{cases}$$
+
+---
+
+### 3. Przypadek dla standardowych parametrów z laboratorium ($m = 1, c = 1$)
+
+Przyjmując parametry $m = 1$ oraz $c = 1$, wzór upraszcza się do postaci:
+- Dla $0 \le t < 1$:
+  $$w(t) = \frac{1}{2}t^2 + k \cdot t + 1$$
+- Dla $1 \le t \le 2$:
+  $$w(t) = -\frac{1}{2}t^2 + (2 - k)t + 2k - 2$$
+- Dla $t > 2$:
+  $$w(t) = 1$$
