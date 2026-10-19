@@ -164,11 +164,11 @@ $$
 A(\omega_r)=\frac{1}{k\sqrt{1-\frac{k^2}{4}}}.
 $$
 
-| $k$ | $\omega_r$ [rad/s] | $A(\omega_r)$ |
-|---:|---:|---:|
-| 0,1 | 0,9975 | 10,0125 |
-| 0,5 | 0,9354 | 2,0656 |
-| 1 | 0,7071 | 1,1547 |
+| $k$ | $\omega_r$ [rad/s] | $A(\omega_r)$ | $\varphi(\omega_r)$ [rad] |
+| ---: | ---: | ---: | ---: |
+| 0,1 | 0,9975 | 10,0125 | -1,5207 |
+| 0,5 | 0,9354 | 2,0656 | -1,3102 |
+| 1 | 0,7071 | 1,1547 | -0,9553 |
 
 ![Charakterystyka amplitudowa dla k = 0,1, 0,5 i 1](zadanie5/amplituda-czestotliwosc.svg)
 *Rys. 26. Amplituda odpowiedzi ustalonej w funkcji częstotliwości wymuszenia. Każdy panel ma osobną skalę amplitudy; zaznaczone punkty wskazują częstotliwości rezonansowe.*
