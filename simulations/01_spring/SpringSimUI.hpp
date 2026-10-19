@@ -21,6 +21,7 @@ public:
     PlotWidget kinematicsPlot;
     PlotWidget positionExtensionPlot;
     PlotWidget trajectoryPlot;
+    PlotWidget errorPlot;
 
 public:
     SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis);

@@ -9,7 +9,8 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
       forcesPlot("Forces Plot"),
       kinematicsPlot("Kinematics Plot"),
     positionExtensionPlot("Position and Spring Extension"),
-      trajectoryPlot("Phase Space Trajectory", true)
+      trajectoryPlot("Phase Space Trajectory", true),
+      errorPlot("Simulation vs Exact Solution")
 {
     forcesPlot.addSeries("f(t) Spring force", IM_COL32(0, 210, 255, 255), 2.0f);
     forcesPlot.addSeries("g(t) Damping force", IM_COL32(60, 220, 100, 255), 2.0f);
@@ -24,6 +25,11 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
     positionExtensionPlot.addSeries("w(t) - x(t) Spring extension", IM_COL32(255, 170, 40, 255), 2.0f);
 
     trajectoryPlot.addSeries("Phase curve (x, xt)", IM_COL32(255, 75, 75, 255), 2.0f);
+
+    // Initialize error plot series
+    errorPlot.addSeries("xs(t) Simulated", IM_COL32(0, 210, 255, 255), 2.0f);
+    errorPlot.addSeries("xe(t) Exact analytical", IM_COL32(255, 220, 50, 255), 2.0f);
+    errorPlot.addSeries("xs(t) - xe(t) Error", IM_COL32(255, 75, 75, 255), 2.0f);
 }
 
 void SpringSimUI::updatePlotData() {
@@ -53,6 +59,10 @@ void SpringSimUI::updatePlotData() {
     populate(positionExtensionPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.w - p.x); });
 
     populate(trajectoryPlot, 0, [](const SimPoint& p) { return ImVec2(p.x, p.v); });
+
+    populate(errorPlot, 0, [](const SimPoint& p) { return ImVec2(p.t, p.x); });
+    populate(errorPlot, 1, [](const SimPoint& p) { return ImVec2(p.t, p.xe); });
+    populate(errorPlot, 2, [](const SimPoint& p) { return ImVec2(p.t, p.err); });
 }
 
 void SpringSimUI::renderUI(Window& window) {
@@ -238,6 +248,14 @@ void SpringSimUI::renderGraphsPanel() {
         if (ImGui::BeginTabItem("Trajectory (Phase Space)")) {
             ImGui::Text("State trajectory (x(t), xt(t)) in phase space:");
             trajectoryPlot.render(ImVec2(-1.0f, 280.0f));
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Simulation vs Analytical Error")) {
+            ImGui::Text("Difference xs(t) - xe(t) with exact analytical solution:");
+            errorPlot.render(ImVec2(-1.0f, 240.0f));
+            ImGui::Text("Current Error: %.6f | Max Absolute Error: %.6f",
+                std::abs(physics.err), physics.maxAbsoluteError);
             ImGui::EndTabItem();
         }
 
