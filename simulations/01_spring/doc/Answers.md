@@ -107,24 +107,80 @@ Dodanie funkcji skokowej jako wymuszenia (ruchu podstawy) nie zmienia optymalnej
 
 ## Pytanie 4 - Odpowiedź na wymuszenie prostokątne
 
-Dla $x(0)=1$, $v(0)=0$, $m=c=1$ oraz $w(t)=f_3$ ($A=1$, $\varphi=0$) porównano przebiegi dla kilku wartości tłumienia. Nazwy plików kodują wartości $k$ w dziesiątych częściach: `k1` oznacza $k=0{,}1$, `k4` — $k=0{,}4$, `k10` — $k=1$, `k15` — $k=1{,}5$, a `k20` — $k=2$.
+Rozważamy układ z parametrami $m = 1$, $c = 1$, z warunkami początkowymi $x(0) = 1$, $v(0) = 0$, poddany wymuszeniu prostokątnemu $w(t) = f_3$ ($A = 1$, $\varphi = 0$), które skacze okresowo pomiędzy wartościami $+1$ i $-1$.
 
-![Wykres dla k=1](zadanie4/k1.png)
-*Rys. 21. Dla $k=1$ położenie masy wykazuje duże, trwałe oscylacje.*
+Równanie ruchu układu ma postać:
+$$m \cdot x''(\tau) + k \cdot x'(\tau) + c(x(\tau) - w(\tau)) = 0$$
 
-![Wykres dla k=1](zadanie4/k5.png)
-*Rys. 21. Dla $k=5$ położenie masy wykazuje duże, trwałe oscylacje.*
+W momencie skoku wymuszenia z $+1$ na $-1$ (przyjmując czas lokalny $\tau = 0$) masa znajduje się w dotychczasowym położeniu równowagi $x(0) = 1$ z zerową prędkością $x'(0) = 0$. Dla $\tau \ge 0$ wymuszenie jest stałe i wynosi $w(\tau) = -1$. 
 
-![Wykres dla k=1](zadanie4/k10.png)
-*Rys. 23. Dla $k=10$ amplituda ruchu jest mniejsza, ale przebieg nadal oscyluje pod wpływem powtarzanego wymuszenia.*
+Definiując błąd jako $e(\tau) = x(\tau) - w(\tau) = x(\tau) + 1$, mamy $e'(\tau) = x'(\tau)$ oraz $e''(\tau) = x''(\tau)$. Po podstawieniu $m = 1$ i $c = 1$ błąd spełnia jednorodne równanie różniczkowe:
+$$e''(\tau) + k \cdot e'(\tau) + e(\tau) = 0$$
 
-![Wykres dla k=1.5](zadanie4/k15.png)
-*Rys. 24. Dla $k=15$ oscylacje położenia mają mniejszą amplitudę niż przy słabszym tłumieniu.*
+Warunki początkowe dla błędu w chwili przełączenia wynoszą:
+$$e(0) = x(0) - w(0) = 1 - (-1) = 2, \qquad e'(0) = x'(0) = 0.$$
 
-![Wykres dla k=2](zadanie4/k20.png)
-*Rys. 25. Dla $k=20$ amplituda położenia jest najmniejsza spośród pokazanych przypadków, lecz ruch nadal jest okresowy.*
+---
 
-Pliki graficzne pokazują położenie $x(t)$, prędkość i przyspieszenie; nie zawierają jednego wspólnego wykresu $x(t)$, $w(t)$ oraz $w(t)-x(t)$. Dla stale powtarzanego przebiegu prostokątnego warunek $|w(t)-x(t)|<0{,}1$ dla każdego $t>T$ nie może być spełniony: przy zmianie znaku $w(t)$ jego wartość skacze, podczas gdy położenie masy $x(t)$ jest ciągłe, więc błąd ponownie przekracza próg przy każdym przełączeniu. Można natomiast wyznaczyć czas zaniku stanu przejściowego, porównując kolejne okresy odpowiedzi, albo zmienić kryterium na błąd mierzony poza chwilami przełączeń.
+Równanie $e''(\tau) + k \cdot e'(\tau) + e(\tau) = 0$ (powstałe dla $m = 1$ i $c = 1$) rozwiązujemy za pomocą równania charakterystycznego (podstawiając $e(\tau) = e^{r\tau}$):
+$$r^2 + k \cdot r + 1 = 0$$
+
+Wyróżnik tego równania kwadratowego wynosi:
+$$\Delta = k^2 - 4$$
+
+Wartość $k = 2$ zeruje wyróżnik ($\Delta = 0$) i stanowi granicę między zupełnie różnymi zachowaniami układu:
+- **Dla $k < 2$ ($\Delta < 0$):** Pierwiastki są zespolone ($r_{1,2} = -\frac{k}{2} \pm i\sqrt{1 - \frac{k^2}{4}}$), przez co w rozwiązaniu pojawiają się funkcje $\sin$ i $\cos$, a układ oscyluje wokół położenia równowagi.
+- **Dla $k = 2$ ($\Delta = 0$):** Istnieje jeden pierwiastek podwójny ($r_0 = -1$). To najmniejsza wartość tłumienia, przy której drgania całkowicie znikają.
+- **Dla $k > 2$ ($\Delta > 0$):** Pierwiastki są rzeczywiste i różne ($r_{1,2} = \frac{-k \pm \sqrt{k^2 - 4}}{2}$), a układ powoli wraca do równowagi bez oscylacji.
+
+---
+
+### 2. Rozwiązanie równania i wyznaczenie czasu $T$ dla badanych przypadków
+
+#### Przypadek $k = 1$:
+- Pierwiastki zespolone ($\Delta = -3$):
+  $$r_{1,2} = -0{,}5 \pm i\frac{\sqrt{3}}{2}$$
+- Ogólna postać:
+  $$e(\tau) = e^{-0{,}5\tau}\left(C_1 \cos\left(\frac{\sqrt{3}}{2}\tau\right) + C_2 \sin\left(\frac{\sqrt{3}}{2}\tau\right)\right)$$
+- Z warunków początkowych $e(0) = 2$ i $e'(0) = 0$:
+  $$C_1 = 2 \quad\text{oraz}\quad C_2 = \frac{2}{\sqrt{3}}$$
+  co można zapisać jako:
+  $$e(\tau) = \frac{4}{\sqrt{3}}e^{-0{,}5\tau}\cos\left(\frac{\sqrt{3}}{2}\tau - \frac{\pi}{6}\right)$$
+- Warunek progu $0{,}1$: $\mathbf{T \approx 5{,}4\text{ s}}$.
+
+![Wykres dla k = 1](zadanie4/ex4_k1.png)
+*Rys. 21. Przebieg $x(t)$, $w(t)$ oraz $w(t)-x(t)$ dla tłumienia podkrytycznego $k = 1$.*
+
+#### Przypadek $k = 2$:
+- Pierwiastek podwójny ($\Delta = 0$):
+  $$r_0 = -1$$
+- Ogólna postać:
+  $$e(\tau) = (C_1 + C_2 \tau)e^{-\tau}$$
+- Z warunków początkowych $e(0) = 2$ i $e'(0) = 0$:
+  $$C_1 = 2 \quad\text{oraz}\quad C_2 = 2$$
+- Wzór na błąd:
+  $$e(\tau) = 2(1 + \tau)e^{-\tau}$$
+- Warunek progu $0{,}1$:
+  $$2(1 + T)e^{-T} = 0{,}1 \implies (1 + T)e^{-T} = 0{,}05 \implies \mathbf{T \approx 4{,}74\text{ s}}$$
+
+![Wykres dla k = 2](zadanie4/ex4_k2.png)
+*Rys. 22. Przebieg $x(t)$, $w(t)$ oraz $w(t)-x(t)$ dla tłumienia krytycznego $k = 2$.*
+
+#### Przypadek $k = 5$:
+- Pierwiastki rzeczywiste ($\Delta = 21$):
+  $$r_1 = \frac{-5 + \sqrt{21}}{2} \approx -0{,}209 \quad\text{oraz}\quad r_2 = \frac{-5 - \sqrt{21}}{2} \approx -4{,}791$$
+- Ogólna postać:
+  $$e(\tau) = C_1 e^{r_1\tau} + C_2 e^{r_2\tau}$$
+- Z warunków początkowych układ równań:
+  $$\begin{cases} C_1 + C_2 = 2 \\ r_1 C_1 + r_2 C_2 = 0 \end{cases}$$
+  daje $C_1 = \frac{2r_2}{r_2 - r_1} \approx 2{,}091$ oraz $C_2 = \frac{-2r_1}{r_2 - r_1} \approx -0{,}091$.
+- Wzór na błąd:
+  $$e(\tau) \approx 2{,}091e^{-0{,}209\tau} - 0{,}091e^{-4{,}791\tau}$$
+- Warunek progu $0{,}1$: Drugi człon błyskawicznie zanika, więc z równania $2{,}091e^{-0{,}209T} \approx 0{,}1$ otrzymujemy:
+  $$\mathbf{T \approx \frac{1}{0{,}209}\ln\left(\frac{2{,}091}{0{,}1}\right) \approx 14{,}55\text{ s}}$$
+
+![Wykres dla k = 5](zadanie4/ex4_k5.png)
+*Rys. 23. Przebieg $x(t)$, $w(t)$ oraz $w(t)-x(t)$ dla tłumienia nadkrytycznego $k = 5$.*
 
 ## Pytanie 5 - Charakterystyka częstotliwościowa
 
