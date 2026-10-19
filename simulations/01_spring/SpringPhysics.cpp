@@ -73,7 +73,6 @@ void SpringPhysics::reset() {
 void SpringPhysics::step() {
     if (delta <= 1e-6f) return;
 
-    // Explicit Euler integration
     x += delta * v;
     v += delta * a;
     t += delta;
@@ -90,7 +89,6 @@ void SpringPhysics::update(float realDt) {
 
     timeAccumulator += effectiveDt;
 
-    // Fixed timestep accumulation
     int stepsTaken = 0;
     while (timeAccumulator >= delta && stepsTaken < 100) {
         step();
@@ -102,7 +100,6 @@ void SpringPhysics::update(float realDt) {
 void SpringPhysics::recordPoint() {
     history.push_back({ t, x, v, a, f, g, h, w });
 
-    // Prune history if it exceeds limits
     if (history.size() > maxHistoryPoints) {
         history.erase(history.begin(), history.begin() + (history.size() - maxHistoryPoints));
     }

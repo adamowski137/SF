@@ -40,7 +40,6 @@ void SpringMeshGenerator::generateSpringVertices(
         float y = yTop + s * (yBottom - yTop);
         float angle = twoPi * params.numCoils * s;
 
-        // Smooth taper at the very ends (0% to 4% and 96% to 100%)
         float taper = 1.0f;
         if (s < 0.04f) taper = s / 0.04f;
         else if (s > 0.96f) taper = (1.0f - s) / 0.04f;
@@ -49,7 +48,6 @@ void SpringMeshGenerator::generateSpringVertices(
         path[i].pos = glm::vec3(R * std::cos(angle), y, R * std::sin(angle));
     }
 
-    // Compute tangents, normals, binormals using GLM vector math
     for (int i = 0; i <= totalSlices; i++) {
         glm::vec3 tangent = (i == 0) ? (path[1].pos - path[0].pos) :
                             (i == totalSlices) ? (path[totalSlices].pos - path[totalSlices - 1].pos) :
@@ -69,7 +67,6 @@ void SpringMeshGenerator::generateSpringVertices(
         path[i].n = glm::normalize(glm::cross(path[i].b, path[i].t));
     }
 
-    // Build vertices around each slice
     const float rWire = params.wireRadius;
     vertices.reserve((totalSlices + 1) * M * 6 + 12);
     for (int i = 0; i <= totalSlices; i++) {
@@ -88,7 +85,6 @@ void SpringMeshGenerator::generateSpringVertices(
         }
     }
 
-    // Build tube indices
     indices.reserve(totalSlices * M * 6 + M * 6);
     for (int i = 0; i < totalSlices; i++) {
         int ring1 = i * M;
@@ -111,7 +107,6 @@ void SpringMeshGenerator::generateSpringVertices(
         }
     }
 
-    // Top cap
     unsigned int topCenterIdx = static_cast<unsigned int>(vertices.size() / 6);
     vertices.push_back(path[0].pos.x);
     vertices.push_back(path[0].pos.y);
@@ -127,7 +122,6 @@ void SpringMeshGenerator::generateSpringVertices(
         indices.push_back(j);
     }
 
-    // Bottom cap
     unsigned int bottomCenterIdx = static_cast<unsigned int>(vertices.size() / 6);
     int lastRingStart = totalSlices * M;
     vertices.push_back(path[totalSlices].pos.x);

@@ -7,7 +7,7 @@ struct PlotSeries {
     std::string name;
     ImU32 color;
     bool visible = true;
-    std::vector<ImVec2> points; // (x, y)
+    std::vector<ImVec2> points;
     float thickness = 1.5f;
 
     PlotSeries(const std::string& n, ImU32 c, float th = 1.5f)
@@ -19,7 +19,6 @@ public:
     std::string title;
     std::vector<PlotSeries> series;
 
-    // Phase portrait mode (equal aspect, crosshairs at 0, 0)
     bool isPhasePlot = false;
     bool showCrosshairs = true;
     bool showLegend = true;

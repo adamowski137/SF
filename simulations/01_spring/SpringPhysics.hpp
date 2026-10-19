@@ -4,11 +4,11 @@
 #include <cmath>
 
 enum class FunctionType {
-    Constant = 0,      // f1 = A
-    Step = 1,          // f2 = (t >= t_step) ? A : 0
-    Square = 2,        // f3 = sgn(A * sin(omega * t + phi))
-    Sine = 3,          // f4 = A * sin(omega * t + phi))
-    OptimalBangBang = 4 // Exercise 6: time-optimal bang-bang control w(t)
+    Constant = 0,
+    Step = 1,
+    Square = 2,
+    Sine = 3,
+    OptimalBangBang = 4
 };
 
 struct SignalFunction {
@@ -34,34 +34,29 @@ struct SimPoint {
 
 class SpringPhysics {
 public:
-    // Physical Parameters
-    float m = 1.0f;       // mass
-    float c = 1.0f;       // spring stiffness (c > 0)
-    float k = 0.1f;       // damping coefficient (k >= 0)
-    float x0 = 1.0f;      // initial position
-    float v0 = 0.0f;      // initial velocity
-    float delta = 0.01f;  // integration step
+    float m = 1.0f;
+    float c = 1.0f;
+    float k = 0.1f;
+    float x0 = 1.0f;
+    float v0 = 0.0f;
+    float delta = 0.01f;
 
-    // Excitation functions
     SignalFunction wFunc; // w(t) - displacement of free end
     SignalFunction hFunc; // h(t) - external direct force
 
-    // Simulation Execution State
     bool isRunning = true;
     float simTimeSpeed = 1.0f;
     size_t maxHistoryPoints = 12000;
 
-    // Current State
     float t = 0.0f;
     float x = 0.0f;
     float v = 0.0f;
     float a = 0.0f;
-    float f = 0.0f;
-    float g = 0.0f;
-    float h = 0.0f;
-    float w = 0.0f;
+    float f = 0.0f;    // spring force: c * (w - x)
+    float g = 0.0f;    // damping force: -k * v
+    float h = 0.0f;    // external force: h(t)
+    float w = 0.0f;    // displacement of free end: w(t)
 
-    // Recorded history
     std::vector<SimPoint> history;
 
 public:

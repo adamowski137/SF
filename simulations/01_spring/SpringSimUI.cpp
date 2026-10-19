@@ -11,13 +11,11 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
     positionExtensionPlot("Position and Spring Extension"),
       trajectoryPlot("Phase Space Trajectory", true)
 {
-    // Initialize forces plot series
     forcesPlot.addSeries("f(t) Spring force", IM_COL32(0, 210, 255, 255), 2.0f);
     forcesPlot.addSeries("g(t) Damping force", IM_COL32(60, 220, 100, 255), 2.0f);
     forcesPlot.addSeries("h(t) Outer force", IM_COL32(255, 170, 40, 255), 2.0f);
     forcesPlot.addSeries("w(t) Free end", IM_COL32(230, 90, 230, 255), 2.0f);
 
-    // Initialize kinematics plot series
     kinematicsPlot.addSeries("x(t) Position", IM_COL32(245, 245, 255, 255), 2.0f);
     kinematicsPlot.addSeries("xt(t) Velocity", IM_COL32(50, 230, 120, 255), 2.0f);
     kinematicsPlot.addSeries("xtt(t) Acceleration", IM_COL32(60, 180, 255, 255), 2.0f);
@@ -25,7 +23,6 @@ SpringSimUI::SpringSimUI(int width, SpringPhysics& phys, VisualSettings& vis)
     positionExtensionPlot.addSeries("w(t) Free end", IM_COL32(230, 90, 230, 255), 2.0f);
     positionExtensionPlot.addSeries("w(t) - x(t) Spring extension", IM_COL32(255, 170, 40, 255), 2.0f);
 
-    // Initialize trajectory plot series (Phase space: x on horizontal, v on vertical)
     trajectoryPlot.addSeries("Phase curve (x, xt)", IM_COL32(255, 75, 75, 255), 2.0f);
 }
 
@@ -131,7 +128,6 @@ void SpringSimUI::renderSignalFunctionControls(
 void SpringSimUI::renderControlsPanel() {
     ImGui::Spacing();
 
-    // Playback Controls
     if (physics.isRunning) {
         if (ImGui::Button("Pause", ImVec2(75, 28))) physics.isRunning = false;
     } else {
@@ -152,7 +148,6 @@ void SpringSimUI::renderControlsPanel() {
 
     renderSepAndSpace();
 
-    // Real-Time Telemetry
     ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "Live Simulation Telemetry");
     ImGui::Columns(2, "telemetry_cols", false);
     ImGui::Text("Position x:   %.3f", physics.x);
@@ -167,7 +162,6 @@ void SpringSimUI::renderControlsPanel() {
 
     renderSepAndSpace();
 
-    // Physical Parameters
     ImGui::TextColored(ImVec4(0.4f, 0.9f, 0.4f, 1.0f), "Physical Parameters");
 
     bool paramChanged = false;
@@ -186,10 +180,8 @@ void SpringSimUI::renderControlsPanel() {
 
     renderSepAndSpace();
 
-    // Free End Displacement w(t)
     renderSignalFunctionControls("Free End Function w(t)", "w", ImVec4(0.9f, 0.4f, 0.9f, 1.0f), physics.wFunc, 10.0f);
 
-    // Exercise 6: Show info and enforce initial conditions for bang-bang control
     if (physics.wFunc.type == FunctionType::OptimalBangBang) {
         ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.6f, 1.0f),
             "Ex6: Time-optimal transfer 0->1 in T=2s");
@@ -206,12 +198,10 @@ void SpringSimUI::renderControlsPanel() {
 
     renderSepAndSpace();
 
-    // External Force Function h(t)
     renderSignalFunctionControls("Outer Field Force h(t)", "h", ImVec4(1.0f, 0.6f, 0.2f, 1.0f), physics.hFunc, 20.0f);
 
     renderSepAndSpace();
 
-    // 3D Visual Appearance Controls
     if (ImGui::CollapsingHeader("3D Visual & Lighting Properties")) {
         ImGui::SliderFloat("Cube Size", &visual.cubeSize, 0.2f, 3.0f);
         ImGui::ColorEdit3("Cube Color", glm::value_ptr(visual.cubeColor));

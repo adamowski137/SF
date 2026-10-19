@@ -74,11 +74,9 @@ void PlotWidget::render(const ImVec2& size) {
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();
 
-    // Background and border
     drawList->AddRectFilled(p0, p1, IM_COL32(22, 24, 30, 255));
     drawList->AddRect(p0, p1, IM_COL32(55, 60, 75, 255));
 
-    // Plot plotting rectangle inside margins
     ImVec2 plotMin = ImVec2(p0.x + labelMarginLeft, p0.y + marginTop);
     ImVec2 plotMax = ImVec2(p1.x - marginRight, p1.y - labelMarginBottom);
 
@@ -89,7 +87,6 @@ void PlotWidget::render(const ImVec2& size) {
 
     drawList->PushClipRect(plotMin, plotMax, true);
 
-    // Compute coordinate limits
     float minX = 0.0f, maxX = 10.0f, minY = -2.0f, maxY = 2.0f;
     computeBounds(minX, maxX, minY, maxY);
 
@@ -108,12 +105,10 @@ void PlotWidget::render(const ImVec2& size) {
         return ImVec2(minX + nx * (maxX - minX), minY + ny * (maxY - minY));
     };
 
-    // Draw Grid Lines and Labels
     const ImU32 gridColor = IM_COL32(45, 50, 62, 255);
     const ImU32 axisColor = IM_COL32(90, 100, 125, 255);
     const ImU32 textColor = IM_COL32(160, 170, 190, 255);
 
-    // Horizontal grid lines (Y ticks)
     const int numYTicks = 5;
     for (int i = 0; i <= numYTicks; i++) {
         float yVal = minY + (maxY - minY) * (static_cast<float>(i) / numYTicks);
@@ -121,7 +116,6 @@ void PlotWidget::render(const ImVec2& size) {
         drawList->AddLine(ImVec2(plotMin.x, pt.y), ImVec2(plotMax.x, pt.y), gridColor);
     }
 
-    // Vertical grid lines (X ticks)
     const int numXTicks = 6;
     for (int i = 0; i <= numXTicks; i++) {
         float xVal = minX + (maxX - minX) * (static_cast<float>(i) / numXTicks);
@@ -129,7 +123,6 @@ void PlotWidget::render(const ImVec2& size) {
         drawList->AddLine(ImVec2(pt.x, plotMin.y), ImVec2(pt.x, plotMax.y), gridColor);
     }
 
-    // Prominent zero axes
     if (minY <= 0.0f && maxY >= 0.0f) {
         ImVec2 pt0 = toScreen(minX, 0.0f);
         drawList->AddLine(ImVec2(plotMin.x, pt0.y), ImVec2(plotMax.x, pt0.y), axisColor, 1.5f);
@@ -139,7 +132,6 @@ void PlotWidget::render(const ImVec2& size) {
         drawList->AddLine(ImVec2(pt0.x, plotMin.y), ImVec2(pt0.x, plotMax.y), axisColor, 1.5f);
     }
 
-    // Draw Series Lines
     for (const auto& s : series) {
         if (!s.visible || s.points.size() < 2) continue;
 
@@ -153,7 +145,6 @@ void PlotWidget::render(const ImVec2& size) {
             prevScr = curScr;
         }
 
-        // Highlight latest point in phase space plot
         if (isPhasePlot && !s.points.empty()) {
             ImVec2 lastPt = toScreen(s.points.back().x, s.points.back().y);
             drawList->AddCircleFilled(lastPt, 4.0f, s.color);
@@ -161,7 +152,6 @@ void PlotWidget::render(const ImVec2& size) {
         }
     }
 
-    // Draw Crosshairs and Hover Tooltip
     ImVec2 mousePos = ImGui::GetMousePos();
     bool hovered = (mousePos.x >= plotMin.x && mousePos.x <= plotMax.x &&
                     mousePos.y >= plotMin.y && mousePos.y <= plotMax.y);
@@ -184,7 +174,6 @@ void PlotWidget::render(const ImVec2& size) {
 
     drawList->PopClipRect();
 
-    // Draw Axis Numerical Text outside clip rect
     char buf[32];
     for (int i = 0; i <= numYTicks; i++) {
         float yVal = minY + (maxY - minY) * (static_cast<float>(i) / numYTicks);
@@ -201,7 +190,6 @@ void PlotWidget::render(const ImVec2& size) {
 
     ImGui::Dummy(canvasSize);
 
-    // Interactive Legend Checkboxes below the plot
     if (showLegend && !series.empty()) {
         ImGui::Spacing();
         for (size_t i = 0; i < series.size(); i++) {

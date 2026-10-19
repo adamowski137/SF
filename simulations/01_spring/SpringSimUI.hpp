@@ -7,8 +7,8 @@
 
 struct VisualSettings {
     float cubeSize = 0.85f;
-    glm::vec3 cubeColor{ 0.95f, 0.75f, 0.2f };      // Golden cube
-    glm::vec3 springColor{ 0.85f, 0.85f, 0.90f };   // Shiny metallic silver
+    glm::vec3 cubeColor{ 0.95f, 0.75f, 0.2f };
+    glm::vec3 springColor{ 0.85f, 0.85f, 0.90f };
     glm::vec3 lightPos{ 4.0f, 8.0f, 6.0f };
 };
 
@@ -17,7 +17,6 @@ public:
     SpringPhysics& physics;
     VisualSettings& visual;
 
-    // Plotting widgets
     PlotWidget forcesPlot;
     PlotWidget kinematicsPlot;
     PlotWidget positionExtensionPlot;
