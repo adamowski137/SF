@@ -227,7 +227,7 @@ $$w(t) = \begin{cases}
 
 ---
 
-### 3. Przypadek dla standardowych parametrów z laboratorium ($m = 1, c = 1$)
+### 3. Przypadek dla parametrów $m = 1, c = 1$
 
 Przyjmując parametry $m = 1$ oraz $c = 1$, wzór upraszcza się do postaci:
 - Dla $0 \le t < 1$:
