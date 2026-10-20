@@ -92,7 +92,7 @@ Dla $x(0)=0$, $v(0)=0$, $m=c=1$ i skoku $w(t)=f_2$ o amplitudzie $A=1$ położen
 *Rys. 16. Dla $k=1$ oscylacje są mocniej tłumione, lecz nadal występuje wyraźne przeregulowanie.*
 
 ![Odpowiedź skokowa A=1 dla k=1.5](zadanie3/a-1k15.png)
-*Rys. 17. Dla $k=1{,}5$ przeregulowanie jest niewielkie, a odpowiedź szybko zbliża się do wartości końcowej; ten przypadek daje najkrótszy czas ustalania w badanym zakresie.*
+*Rys. 17. Dla $k=1{,}5$ przeregulowanie jest niewielkie, a odpowiedź szybko zbliża się do wartości końcowej;*
 
 ![Odpowiedź skokowa A=1 dla k=2](zadanie3/a-1k2.png)
 *Rys. 18. Dla tłumienia krytycznego $k=2$ odpowiedź dochodzi do równowagi bez oscylacji i przeregulowania.*
