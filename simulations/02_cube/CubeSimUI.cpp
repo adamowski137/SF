@@ -109,10 +109,6 @@ void CubeSimUI::renderUI(Window& window) {
             renderTelemetryAndPlotsTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Pomoc i Sterowanie")) {
-            renderHelpSection();
-            ImGui::EndTabItem();
-        }
         ImGui::EndTabBar();
     }
 
@@ -347,27 +343,3 @@ void CubeSimUI::renderTelemetryAndPlotsTab() {
     }
 }
 
-void CubeSimUI::renderHelpSection() {
-    ImGui::Spacing();
-    ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.2f, 1.0f), "INSTRUKCJA OBSLUGI I STEROWANIA");
-    ImGui::Separator();
-
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "Sterowanie kamera (Krok 1.2):");
-    ImGui::BulletText("Prawy przycisk myszy (PPM) + przeciaganie: Obracanie sceny");
-    ImGui::BulletText("Shift + PPM + przeciaganie: Przesuwanie sceny (pan)");
-    ImGui::BulletText("Kolko myszy (Scroll): Przyblizanie / Oddalanie (skalowanie sceny)");
-
-    ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "Rownania fizyki (Krok 2):");
-    ImGui::BulletText("Rownania Eulera w ukladzie bryly:");
-    ImGui::Indent();
-    ImGui::Text("I * dW/dt = N + (I * W) x W");
-    ImGui::Text("dQ/dt = 0.5 * Q * (0, W)");
-    ImGui::Unindent();
-    ImGui::BulletText("Calkowanie numeryczne: Metoda Rungego-Kutty IV rzedu jednoczesnie dla Q i W");
-    ImGui::BulletText("Normalizacja kwaternionu Q po kazdym kroku RK4");
-
-    ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "Wlasnosci baczka symetrycznego:");
-    ImGui::TextWrapped("Dla szescianu o boku a zamocowanego w narrozu, przekatna jest glowna osia symetrii tensora bezwladnosci z momentem I_diag = M*a^2 / 6, a plaszczyzna do niej prostopadla jest zdegenerowana z momentem I_perp = 11/12 * M*a^2. Dzieki temu szescian zachowuje sie dokladnie jak symetryczny baczek Lagrange'a!");
-}

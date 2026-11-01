@@ -57,5 +57,4 @@ private:
     void renderVisualizationTab();
     void renderPhysicsParametersTab();
     void renderTelemetryAndPlotsTab();
-    void renderHelpSection();
 };
