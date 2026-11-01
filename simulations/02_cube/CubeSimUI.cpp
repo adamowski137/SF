@@ -208,39 +208,6 @@ void CubeSimUI::renderVisualizationTab() {
         physics.clearTrajectory();
         updatePlotData();
     }
-
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "2. INTERAKCJA ZE SCENA (Krok 1.2)");
-    ImGui::TextDisabled("Przesuwanie, obracanie i skalowanie sceny:");
-
-    if (ImGui::Button("Reset widoku")) {
-        camera.reset(-3.14159f / 4.0f, -3.14159f / 6.0f, 4.5f, glm::vec3(0.0f, 0.5f, 0.0f));
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Rzut izometryczny")) {
-        camera.setPose(-3.14159f / 4.0f, -3.14159f / 5.5f, 4.2f, glm::vec3(0.0f, 0.5f, 0.0f));
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Przod (XY)")) {
-        camera.setPose(0.0f, 0.0f, 4.5f, glm::vec3(0.0f, 0.5f, 0.0f));
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Gora (XZ)")) {
-        camera.setPose(0.0f, -3.14159f / 2.05f, 4.5f, glm::vec3(0.0f, 0.0f, 0.0f));
-    }
-
-    ImGui::Spacing();
-    ImGui::Separator();
-    if (ImGui::CollapsingHeader("Kolory i style elementow wizualnych")) {
-        ImGui::ColorEdit4("Kolor szescianu", glm::value_ptr(visual.cubeColor));
-        ImGui::ColorEdit4("Kolor krawedzi", glm::value_ptr(visual.wireframeColor));
-        ImGui::ColorEdit4("Kolor przekatnej", glm::value_ptr(visual.diagonalColor));
-        ImGui::ColorEdit4("Kolor trajektorii", glm::value_ptr(visual.trajectoryColor));
-        ImGui::ColorEdit4("Kolor grawitacji", glm::value_ptr(visual.gravityColor));
-        ImGui::ColorEdit4("Kolor plaszczyzny", glm::value_ptr(visual.planeColor));
-        ImGui::SliderFloat("Grubosc przekatnej", &visual.diagonalRadius, 0.005f, 0.08f);
-    }
 }
 
 void CubeSimUI::renderPhysicsParametersTab() {
