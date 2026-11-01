@@ -62,10 +62,17 @@ Renderer::Renderer()
 
 void Renderer::drawLines(const std::shared_ptr<Mesh>& mesh_)
 {
-	shaderManager.get("default")->bind();
-	shaderManager.get("default")->setUniformMat4fv("model", glm::mat4(1.0f));
-	shaderManager.get("default")->setUniformVec4f("color", glm::vec4(0.5f, 0.f, 0.5f, 1.0f));
-	glLineWidth(3.f);
+	this->drawLines(mesh_, glm::mat4(1.0f), glm::vec4(0.5f, 0.f, 0.5f, 1.0f), 3.f);
+}
+
+void Renderer::drawLines(const std::shared_ptr<Mesh>& mesh_, const glm::mat4& modelMatrix, const glm::vec4& color, float lineWidth)
+{
+	auto shader = shaderManager.get("default");
+	if (!shader || !mesh_) return;
+	shader->bind();
+	shader->setUniformMat4fv("model", modelMatrix);
+	shader->setUniformVec4f("color", color);
+	glLineWidth(lineWidth);
 	mesh_->bind();
 	Call(glDrawElements(GL_LINES, mesh_->getIndiciesCount(), GL_UNSIGNED_INT, nullptr));
 }

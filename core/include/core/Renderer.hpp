@@ -24,5 +24,7 @@ public:
 	void setLighting(const glm::vec3& lightPos, const glm::vec3& cameraPos);
 	void setLighting(const glm::vec4& lightPos, const glm::vec4& cameraPos);
 	void drawLines(const std::shared_ptr<Mesh>& mesh_);
+	void drawLines(const std::shared_ptr<Mesh>& mesh_, const glm::mat4& modelMatrix, const glm::vec4& color, float lineWidth = 2.0f);
 	void drawMeshPhong(const std::shared_ptr<Mesh>& mesh_, const glm::mat4& modelMatrix, const glm::vec4& color);
+	ShaderManager& getShaderManager() { return shaderManager; }
 };

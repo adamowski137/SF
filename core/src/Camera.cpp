@@ -87,3 +87,21 @@ void Camera::pan(float dx, float dy)
 	target += right * dx * radius + up * dy * radius;
 	needRecalculation = true;
 }
+
+void Camera::setPose(float newYaw, float newPitch, float newRadius, const glm::vec3& newTarget)
+{
+	target = newTarget;
+	yaw = newYaw;
+	pitch = clamp(-3.14159265f / 2 + 0.01f, 3.14159265f / 2 - 0.01f, newPitch);
+	radius = clamp(minZoom, maxZoom, newRadius);
+	needRecalculation = true;
+}
+
+void Camera::reset(float initialYaw, float initialPitch, float initialRadius, const glm::vec3& initialTarget)
+{
+	target = initialTarget;
+	yaw = initialYaw;
+	pitch = initialPitch;
+	radius = clamp(minZoom, maxZoom, initialRadius);
+	needRecalculation = true;
+}

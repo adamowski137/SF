@@ -1,0 +1,126 @@
+#pragma once
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <vector>
+#include <string>
+
+enum class CubeSimPreset {
+    RegularPrecession = 0,
+    NutationLoops = 1,
+    FreeRigidBody = 2,
+    PhysicalPendulum = 3,
+    SleepingTop = 4
+};
+
+struct TelemetryPoint {
+    float t = 0.0f;
+    float eKin = 0.0f;
+    float ePot = 0.0f;
+    float eTot = 0.0f;
+    glm::vec3 W{ 0.0f };
+    glm::vec3 tipPos{ 0.0f };
+    float thetaDeg = 0.0f;
+};
+
+class CubePhysics {
+public:
+    // --- Cube Dimensions & Density ---
+    float a = 1.0f; // length along X (m)
+    float b = 1.0f; // length along Y (m)
+    float c = 1.0f; // length along Z (m)
+    bool uniformCube = true; // when true, changing 'a' keeps a = b = c
+    float rho = 500.0f; // density (kg / m^3)
+
+    // Derived physical properties (updated automatically)
+    float mass = 500.0f; // M = rho * a * b * c (kg)
+    glm::vec3 r_cm{ 0.5f, 0.5f, 0.5f }; // center of mass in body coordinates
+    glm::mat3 I{ 1.0f }; // 3x3 inertia tensor with respect to corner
+    glm::mat3 invI{ 1.0f }; // inverse inertia tensor
+    float I_diag = 0.0f; // principal moment of inertia along diagonal
+    float I_perp = 0.0f; // moment of inertia perpendicular to diagonal
+
+    // --- Gravity ---
+    bool gravityEnabled = true;
+    float gValue = 9.81f; // m/s^2
+    glm::vec3 gravityDir{ 0.0f, -1.0f, 0.0f }; // normalized gravity direction in world space
+
+    // --- Optional Damping ---
+    float dampingCoeff = 0.0f; // rotational air resistance torque: -c * W
+
+    // --- Initial Condition Settings (Krok 1.3) ---
+    float initThetaDeg = 30.0f;  // polar inclination of diagonal from vertical (degrees)
+    float initPhiDeg = 0.0f;    // azimuth angle of tilt in horizontal plane (degrees)
+    float initPsiDeg = 0.0f;    // rotation angle around diagonal (degrees)
+    float initOmegaDiag = 45.0f; // angular velocity around diagonal (rad/s)
+    float initOmegaPerp = 0.0f;  // transverse angular velocity (rad/s, for nutation)
+
+    // --- Simulation State ---
+    float t = 0.0f;
+    glm::quat Q{ 1.0f, 0.0f, 0.0f, 0.0f }; // orientation quaternion (body -> world)
+    glm::vec3 W{ 0.0f, 0.0f, 0.0f };      // angular velocity in body frame (rad/s)
+
+    // Simulation runtime controls
+    bool isRunning = true;
+    float simTimeSpeed = 1.0f;
+    float delta = 0.001f; // RK4 time step size (s)
+    int maxSubStepsPerFrame = 200;
+
+    // --- Trajectory of the free diagonal end (Krok 1.1 & 1.3) ---
+    int trajectoryLengthN = 1000; // max number of points to keep
+    std::vector<glm::vec3> trajectory; // world positions of tip
+
+    // --- Telemetry History for Plots ---
+    std::vector<TelemetryPoint> history;
+    size_t maxHistoryPoints = 6000;
+
+public:
+    CubePhysics();
+
+    void reset();
+    void step();
+    void update(float realDt);
+
+    // Update dimensions and density, recalculating inertia tensor
+    void setDimensions(float newA, float newB, float newC);
+    void setDensity(float newRho);
+    void updateInertiaTensor();
+
+    // Orientation and angular velocity configuration
+    void setInitialConditions(float thetaDeg, float phiDeg, float omegaDiag, float psiDeg = 0.0f, float omegaPerp = 0.0f);
+    void applyOrientationFromDiagonal(float thetaDeg, float phiDeg, float psiDeg = 0.0f);
+    void applyAngularVelocityAroundDiagonal(float omegaDiag, float omegaPerp = 0.0f);
+
+    // Presets
+    void loadPreset(CubeSimPreset preset);
+
+    // Queries
+    glm::vec3 getTipWorldPosition() const;
+    glm::vec3 getCenterOfMassWorld() const;
+    glm::vec3 getDiagonalBody() const;
+    glm::vec3 getDiagonalUnitBody() const;
+    glm::vec3 getDiagonalWorld() const;
+    glm::vec3 getDiagonalUnitWorld() const;
+    float getCurrentInclinationDeg() const;
+
+    float getKineticEnergy() const;
+    float getPotentialEnergy() const;
+    float getTotalEnergy() const;
+
+    glm::vec3 getAngularMomentumBody() const;
+    glm::vec3 getAngularMomentumWorld() const;
+
+    glm::vec3 getAngularVelocityWorld() const;
+
+    void clearTrajectory();
+
+private:
+    float timeAccumulator = 0.0f;
+
+    struct Derivative {
+        glm::quat dQ;
+        glm::vec3 dW;
+    };
+
+    Derivative evaluateDerivative(const glm::quat& qState, const glm::vec3& wState) const;
+    void recordPoint();
+};

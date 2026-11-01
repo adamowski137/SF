@@ -12,6 +12,8 @@ file(GLOB IMGUI_SOURCES
     "${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp"
 )
 
+find_package(OpenGL REQUIRED)
+
 add_library(core_lib STATIC
   src/error.cpp
   src/Mesh.cpp
@@ -41,5 +43,5 @@ target_link_libraries(core_lib
         glm::glm
         glfw
         libglew_static
-        opengl32
+        ${OPENGL_LIBRARIES}
 )
