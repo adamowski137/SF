@@ -21,7 +21,6 @@ CubeSimApp::CubeSimApp(int width, int height, int ui_width)
 void CubeSimApp::init() {
     cornerCubeMesh = CubeMeshGenerator::GetCornerCubeMesh();
     cornerWireframeMesh = CubeMeshGenerator::GetCornerCubeWireframeMesh();
-    planeMesh = CubeMeshGenerator::GetPlaneMesh(1.0f); // unit plane, scaled in draw
     gridMesh = CubeMeshGenerator::GetGridMesh(12.0f, 0.5f);
     cylinderMesh = MeshGenerator::GetCylinderMesh(1.0f, 1.0f, 24, 2);
     sphereMesh = MeshGenerator::GetSphereMesh();
@@ -66,31 +65,9 @@ void CubeSimApp::renderScene() {
 
     renderer->setLighting(cubeUI->visual.lightPos, camera.getPosition());
 
-    // 1. Reference floor grid
-    if (cubeUI->visual.showGrid && gridMesh) {
-        renderer->drawLines(gridMesh, glm::mat4(1.0f), glm::vec4(0.24f, 0.28f, 0.35f, 0.6f), 1.0f);
-    }
-
-    // 2. Semi-transparent plane perpendicular to gravity vector (Krok 1.1)
-    if (cubeUI->visual.showPerpendicularPlane && planeMesh) {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDisable(GL_CULL_FACE);
-
-        // Plane normal should point opposite to gravity direction
-        glm::vec3 upDir = -glm::normalize(physics.gravityDir);
-        glm::quat rotPlane = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-        if (glm::length(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), upDir)) > 1e-4f) {
-            float cosT = glm::clamp(glm::dot(glm::vec3(0.0f, 1.0f, 0.0f), upDir), -1.0f, 1.0f);
-            rotPlane = glm::angleAxis(std::acos(cosT), glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), upDir)));
-        }
-
-        glm::mat4 modelPlane = glm::mat4_cast(rotPlane) *
-                               glm::scale(glm::mat4(1.0f), glm::vec3(cubeUI->visual.planeSize));
-        renderer->drawMeshPhong(planeMesh, modelPlane, cubeUI->visual.planeColor);
-
-        glEnable(GL_CULL_FACE);
-        glDisable(GL_BLEND);
+    // 1. Reference grid (semi-transparent plane perpendicular to gravity vector) (Krok 1.1)
+    if (cubeUI->visual.showPerpendicularPlane && gridMesh) {
+        renderer->drawLines(gridMesh, glm::mat4(1.0f), cubeUI->visual.planeColor, 1.0f);
     }
 
     // 3. Gravity direction vector (arrow) (Krok 1.1)

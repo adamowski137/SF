@@ -14,7 +14,6 @@ private:
     // Meshes
     std::shared_ptr<Mesh> cornerCubeMesh;
     std::shared_ptr<Mesh> cornerWireframeMesh;
-    std::shared_ptr<Mesh> planeMesh;
     std::shared_ptr<Mesh> gridMesh;
     std::shared_ptr<Mesh> cylinderMesh;
     std::shared_ptr<Mesh> sphereMesh;

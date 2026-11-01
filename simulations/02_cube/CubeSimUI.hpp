@@ -15,14 +15,13 @@ struct CubeVisualSettings {
     bool showGravityVector = true;
     bool showPerpendicularPlane = true;
     bool showMarkers = true;
-    bool showGrid = true;
 
     glm::vec4 cubeColor{ 0.95f, 0.55f, 0.15f, 0.90f };      // warm amber
     glm::vec4 wireframeColor{ 0.12f, 0.12f, 0.14f, 1.0f }; // sharp dark outline
     glm::vec4 diagonalColor{ 1.00f, 0.88f, 0.05f, 1.0f };   // bright gold
     glm::vec4 trajectoryColor{ 0.00f, 0.85f, 1.00f, 1.0f }; // cyan
     glm::vec4 gravityColor{ 0.20f, 0.90f, 0.35f, 1.0f };    // green
-    glm::vec4 planeColor{ 0.30f, 0.55f, 0.85f, 0.35f };     // semi-transparent ice-blue
+    glm::vec4 planeColor{ 0.24f, 0.28f, 0.35f, 0.60f };     // semi-transparent floor grid
     glm::vec4 pivotColor{ 0.95f, 0.20f, 0.20f, 1.0f };     // red pivot anchor
     glm::vec4 tipColor{ 1.00f, 0.85f, 0.10f, 1.0f };       // gold tip marker
 
@@ -30,7 +29,6 @@ struct CubeVisualSettings {
     float diagonalRadius = 0.022f;
     float markerRadius = 0.055f;
     float gravityArrowLength = 1.8f;
-    float planeSize = 8.0f;
 };
 
 class CubeSimUI : public UI {

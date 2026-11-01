@@ -191,8 +191,6 @@ void CubeSimUI::renderVisualizationTab() {
     ImGui::Checkbox("Polprzezroczysta plaszczyzna", &visual.showPerpendicularPlane);
 
     ImGui::Checkbox("Punkty narozne (narroze i koniec)", &visual.showMarkers);
-    ImGui::SameLine(230);
-    ImGui::Checkbox("Siatka odniesienia", &visual.showGrid);
 
     ImGui::Spacing();
     ImGui::Separator();
