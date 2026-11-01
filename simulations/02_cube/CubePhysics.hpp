@@ -51,7 +51,7 @@ public:
     float initThetaDeg = 30.0f;  // polar inclination of diagonal from vertical (degrees)
     float initPhiDeg = 0.0f;    // azimuth angle of tilt in horizontal plane (degrees)
     float initPsiDeg = 0.0f;    // rotation angle around diagonal (degrees)
-    float initOmegaDiag = 45.0f; // angular velocity around diagonal (rad/s)
+    float initOmegaDiag = 5.0f;  // angular velocity around diagonal (rad/s)
     float initOmegaPerp = 0.0f;  // transverse angular velocity (rad/s, for nutation)
 
     // --- Simulation State ---
