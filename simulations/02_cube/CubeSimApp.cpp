@@ -93,7 +93,7 @@ void CubeSimApp::renderScene() {
 
     // 4. Cube model matrix: anchored at fixed vertex (0, 0, 0)
     glm::mat4 modelCube = glm::mat4_cast(physics.Q) *
-                          glm::scale(glm::mat4(1.0f), glm::vec3(physics.a, physics.b, physics.c));
+                          glm::scale(glm::mat4(1.0f), glm::vec3(physics.a));
 
     // Solid cube
     if (cubeUI->visual.showCube && cornerCubeMesh) {

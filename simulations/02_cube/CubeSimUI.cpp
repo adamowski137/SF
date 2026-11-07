@@ -208,23 +208,13 @@ void CubeSimUI::renderVisualizationTab() {
 
 void CubeSimUI::renderPhysicsParametersTab() {
     ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYMIARY I GESTOSC SZESCIANU (Krok 1.3)");
-
-    ImGui::Checkbox("Jednakowe wymiary (Szescian foremny)", &physics.uniformCube);
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYMIAR I GESTOSC SZESCIANU (Krok 1.3)");
 
     bool dimChanged = false;
-    if (physics.uniformCube) {
-        float side = physics.a;
-        if (ImGui::SliderFloat("Dlugosc boku a [m]", &side, 0.2f, 3.0f, "%.2f m")) {
-            physics.setDimensions(side, side, side);
-            dimChanged = true;
-        }
-    } else {
-        float dim[3] = { physics.a, physics.b, physics.c };
-        if (ImGui::SliderFloat3("Wymiary a, b, c [m]", dim, 0.2f, 3.0f, "%.2f m")) {
-            physics.setDimensions(dim[0], dim[1], dim[2]);
-            dimChanged = true;
-        }
+    float side = physics.a;
+    if (ImGui::SliderFloat("Dlugosc boku a [m]", &side, 0.2f, 3.0f, "%.2f m")) {
+        physics.setSideLength(side);
+        dimChanged = true;
     }
 
     float rho = physics.rho;

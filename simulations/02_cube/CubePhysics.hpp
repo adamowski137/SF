@@ -24,15 +24,12 @@ struct TelemetryPoint {
 
 class CubePhysics {
 public:
-    // --- Cube Dimensions & Density ---
-    float a = 1.0f; // length along X (m)
-    float b = 1.0f; // length along Y (m)
-    float c = 1.0f; // length along Z (m)
-    bool uniformCube = true; // when true, changing 'a' keeps a = b = c
+    // --- Cube Dimension & Density ---
+    float a = 1.0f; // length of the side of the cube (m)
     float rho = 500.0f; // density (kg / m^3)
 
     // Derived physical properties (updated automatically)
-    float mass = 500.0f; // M = rho * a * b * c (kg)
+    float mass = 500.0f; // M = rho * a^3 (kg)
     glm::vec3 r_cm{ 0.5f, 0.5f, 0.5f }; // center of mass in body coordinates
     glm::mat3 I{ 1.0f }; // 3x3 inertia tensor with respect to corner
     glm::mat3 invI{ 1.0f }; // inverse inertia tensor
@@ -80,8 +77,9 @@ public:
     void step();
     void update(float realDt);
 
-    // Update dimensions and density, recalculating inertia tensor
-    void setDimensions(float newA, float newB, float newC);
+    // Update side length and density, recalculating inertia tensor
+    void setSideLength(float newA);
+    void setDimensions(float newA);
     void setDensity(float newRho);
     void updateInertiaTensor();
 

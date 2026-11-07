@@ -35,16 +35,13 @@ CubePhysics::CubePhysics() {
     reset();
 }
 
-void CubePhysics::setDimensions(float newA, float newB, float newC) {
+void CubePhysics::setSideLength(float newA) {
     a = std::max(0.05f, newA);
-    if (uniformCube) {
-        b = a;
-        c = a;
-    } else {
-        b = std::max(0.05f, newB);
-        c = std::max(0.05f, newC);
-    }
     updateInertiaTensor();
+}
+
+void CubePhysics::setDimensions(float newA) {
+    setSideLength(newA);
 }
 
 void CubePhysics::setDensity(float newRho) {
@@ -53,41 +50,33 @@ void CubePhysics::setDensity(float newRho) {
 }
 
 void CubePhysics::updateInertiaTensor() {
-    mass = rho * a * b * c;
-    r_cm = glm::vec3(a * 0.5f, b * 0.5f, c * 0.5f);
+    mass = rho * a * a * a;
+    r_cm = glm::vec3(a * 0.5f);
 
-    float Ixx = (mass / 3.0f) * (b * b + c * c);
-    float Iyy = (mass / 3.0f) * (a * a + c * c);
-    float Izz = (mass / 3.0f) * (a * a + b * b);
-    float Ixy = -0.25f * mass * a * b;
-    float Ixz = -0.25f * mass * a * c;
-    float Iyz = -0.25f * mass * b * c;
+    float diag = (2.0f / 3.0f) * mass * a * a;
+    float offDiag = -0.25f * mass * a * a;
 
     // GLM mat3 is column-major: mat3(col0, col1, col2)
-    // Since I is symmetric, col0 = (Ixx, Ixy, Ixz), col1 = (Ixy, Iyy, Iyz), col2 = (Ixz, Iyz, Izz)
+    // For a uniform cube anchored at corner (0,0,0):
+    // Ixx = Iyy = Izz = (2/3)*mass*a^2, Ixy = Ixz = Iyz = -0.25*mass*a^2
     I = glm::mat3(
-        Ixx, Ixy, Ixz,
-        Ixy, Iyy, Iyz,
-        Ixz, Iyz, Izz
+        diag, offDiag, offDiag,
+        offDiag, diag, offDiag,
+        offDiag, offDiag, diag
     );
 
     invI = glm::inverse(I);
 
-    glm::vec3 d_hat = getDiagonalUnitBody();
-    I_diag = glm::dot(d_hat, I * d_hat);
-    if (std::abs(a - b) < 1e-4f && std::abs(b - c) < 1e-4f) {
-        I_perp = (11.0f / 12.0f) * mass * a * a;
-    } else {
-        I_perp = 0.5f * (Ixx + Iyy + Izz - I_diag);
-    }
+    I_diag = (1.0f / 6.0f) * mass * a * a;
+    I_perp = (11.0f / 12.0f) * mass * a * a;
 }
 
 glm::vec3 CubePhysics::getDiagonalBody() const {
-    return glm::vec3(a, b, c);
+    return glm::vec3(a);
 }
 
 glm::vec3 CubePhysics::getDiagonalUnitBody() const {
-    return glm::normalize(glm::vec3(a, b, c));
+    return glm::normalize(glm::vec3(1.0f));
 }
 
 glm::vec3 CubePhysics::getDiagonalWorld() const {
