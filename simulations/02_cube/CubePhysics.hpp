@@ -12,16 +12,6 @@ enum class CubeSimPreset {
     SleepingTop = 4
 };
 
-struct TelemetryPoint {
-    float t = 0.0f;
-    float eKin = 0.0f;
-    float ePot = 0.0f;
-    float eTot = 0.0f;
-    glm::vec3 W{ 0.0f };
-    glm::vec3 tipPos{ 0.0f };
-    float thetaDeg = 0.0f;
-};
-
 class CubePhysics {
 public:
     // --- Cube Dimension & Density ---
@@ -64,10 +54,6 @@ public:
     int trajectoryLengthN = 1000; // max number of points to keep
     std::vector<glm::vec3> trajectory; // world positions of tip
 
-    // --- Telemetry History for Plots ---
-    std::vector<TelemetryPoint> history;
-    size_t maxHistoryPoints = 6000;
-
 public:
     CubePhysics();
 
@@ -91,21 +77,9 @@ public:
 
     // Queries
     glm::vec3 getTipWorldPosition() const;
-    glm::vec3 getCenterOfMassWorld() const;
     glm::vec3 getDiagonalBody() const;
     glm::vec3 getDiagonalUnitBody() const;
     glm::vec3 getDiagonalWorld() const;
-    glm::vec3 getDiagonalUnitWorld() const;
-    float getCurrentInclinationDeg() const;
-
-    float getKineticEnergy() const;
-    float getPotentialEnergy() const;
-    float getTotalEnergy() const;
-
-    glm::vec3 getAngularMomentumBody() const;
-    glm::vec3 getAngularMomentumWorld() const;
-
-    glm::vec3 getAngularVelocityWorld() const;
 
     void clearTrajectory();
 
@@ -118,5 +92,4 @@ private:
     };
 
     Derivative evaluateDerivative(const glm::quat& qState, const glm::vec3& wState) const;
-    void recordPoint();
 };

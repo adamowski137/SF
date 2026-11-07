@@ -10,72 +10,8 @@
 #endif
 
 CubeSimUI::CubeSimUI(int width, CubePhysics& phys, Camera& cam)
-    : UI(width), physics(phys), camera(cam),
-      trajectoryPlot("Rzut trajektorii w plaszczyznie poziomej (X-Z)", true),
-      energyPlot("Energia ukladu w czasie"),
-      angularVelPlot("Predkosc katowa W w ukladzie bryly"),
-      inclinationPlot("Wychylenie przekatnej theta(t)")
+    : UI(width), physics(phys), camera(cam)
 {
-    // Configure series
-    trajectoryPlot.addSeries("Koniec przekatnej (X, Z)", IM_COL32(0, 220, 255, 255), 2.0f);
-
-    energyPlot.addSeries("E_rot Kinetyczna", IM_COL32(255, 170, 40, 255), 2.0f);
-    energyPlot.addSeries("E_pot Potencjalna", IM_COL32(60, 220, 100, 255), 2.0f);
-    energyPlot.addSeries("E_tot Calkowita", IM_COL32(255, 60, 60, 255), 2.5f);
-
-    angularVelPlot.addSeries("Wx", IM_COL32(255, 80, 80, 255), 2.0f);
-    angularVelPlot.addSeries("Wy", IM_COL32(80, 230, 100, 255), 2.0f);
-    angularVelPlot.addSeries("Wz", IM_COL32(80, 170, 255, 255), 2.0f);
-
-    inclinationPlot.addSeries("theta [deg]", IM_COL32(255, 215, 0, 255), 2.0f);
-}
-
-void CubeSimUI::updatePlotData() {
-    const auto& hist = physics.history;
-    if (hist.empty()) return;
-
-    // Trajectory plot: (X, Z)
-    auto& trajPts = trajectoryPlot.series[0].points;
-    trajPts.clear();
-    trajPts.reserve(physics.trajectory.size());
-    for (const auto& p : physics.trajectory) {
-        trajPts.push_back(ImVec2(p.x, p.z));
-    }
-
-    // Energy plot
-    auto& eKinPts = energyPlot.series[0].points;
-    auto& ePotPts = energyPlot.series[1].points;
-    auto& eTotPts = energyPlot.series[2].points;
-    eKinPts.clear(); ePotPts.clear(); eTotPts.clear();
-    eKinPts.reserve(hist.size());
-    ePotPts.reserve(hist.size());
-    eTotPts.reserve(hist.size());
-
-    // Angular velocity plot
-    auto& wxPts = angularVelPlot.series[0].points;
-    auto& wyPts = angularVelPlot.series[1].points;
-    auto& wzPts = angularVelPlot.series[2].points;
-    wxPts.clear(); wyPts.clear(); wzPts.clear();
-    wxPts.reserve(hist.size());
-    wyPts.reserve(hist.size());
-    wzPts.reserve(hist.size());
-
-    // Inclination plot
-    auto& thetaPts = inclinationPlot.series[0].points;
-    thetaPts.clear();
-    thetaPts.reserve(hist.size());
-
-    for (const auto& pt : hist) {
-        eKinPts.push_back(ImVec2(pt.t, pt.eKin));
-        ePotPts.push_back(ImVec2(pt.t, pt.ePot));
-        eTotPts.push_back(ImVec2(pt.t, pt.eTot));
-
-        wxPts.push_back(ImVec2(pt.t, pt.W.x));
-        wyPts.push_back(ImVec2(pt.t, pt.W.y));
-        wzPts.push_back(ImVec2(pt.t, pt.W.z));
-
-        thetaPts.push_back(ImVec2(pt.t, pt.thetaDeg));
-    }
 }
 
 void CubeSimUI::renderUI(Window& window) {
@@ -103,10 +39,6 @@ void CubeSimUI::renderUI(Window& window) {
         }
         if (ImGui::BeginTabItem("Parametry i Fizyka (Krok 2)")) {
             renderPhysicsParametersTab();
-            ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Wykresy i Telemetria")) {
-            renderTelemetryAndPlotsTab();
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
@@ -137,14 +69,12 @@ void CubeSimUI::renderSimulationControls() {
     if (ImGui::Button("Krok", ImVec2(70, 28))) {
         physics.isRunning = false;
         physics.step();
-        updatePlotData();
     }
 
     ImGui::SameLine();
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.3f, 0.4f, 0.6f, 1.0f));
     if (ImGui::Button("Reset", ImVec2(75, 28))) {
         physics.reset();
-        updatePlotData();
     }
     ImGui::PopStyleColor();
 
@@ -165,7 +95,6 @@ void CubeSimUI::renderSimulationControls() {
     };
     if (ImGui::Combo("Scenariusz (Preset)", &activePresetIdx, presets, IM_ARRAYSIZE(presets))) {
         physics.loadPreset(static_cast<CubeSimPreset>(activePresetIdx));
-        updatePlotData();
     }
 
     ImGui::Separator();
@@ -202,7 +131,6 @@ void CubeSimUI::renderVisualizationTab() {
 
     if (ImGui::Button("Wyczysc trajektorie")) {
         physics.clearTrajectory();
-        updatePlotData();
     }
 }
 
@@ -210,21 +138,14 @@ void CubeSimUI::renderPhysicsParametersTab() {
     ImGui::Spacing();
     ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYMIAR I GESTOSC SZESCIANU (Krok 1.3)");
 
-    bool dimChanged = false;
     float side = physics.a;
     if (ImGui::SliderFloat("Dlugosc boku a [m]", &side, 0.2f, 3.0f, "%.2f m")) {
         physics.setSideLength(side);
-        dimChanged = true;
     }
 
     float rho = physics.rho;
     if (ImGui::SliderFloat("Gestosc rho [kg/m^3]", &rho, 10.0f, 5000.0f, "%.0f kg/m^3")) {
         physics.setDensity(rho);
-        dimChanged = true;
-    }
-
-    if (dimChanged) {
-        updatePlotData();
     }
 
     ImGui::Text("Masa calkowita M: %.2f kg", physics.mass);
@@ -264,7 +185,6 @@ void CubeSimUI::renderPhysicsParametersTab() {
 
     if (ImGui::Button("Zastosuj do stanu poczatkowego i Reset")) {
         physics.reset();
-        updatePlotData();
     }
     ImGui::SameLine();
     if (ImGui::Button("Ustaw orientacje teraz")) {
@@ -285,48 +205,5 @@ void CubeSimUI::renderPhysicsParametersTab() {
         ImGui::SliderFloat("Przyspieszenie g [m/s^2]", &physics.gValue, 0.0f, 30.0f, "%.2f m/s^2");
     }
     ImGui::SliderFloat("Tlumienie obrotu (drag)", &physics.dampingCoeff, 0.0f, 0.2f, "%.4f");
-}
-
-void CubeSimUI::renderTelemetryAndPlotsTab() {
-    ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "TELEMETRIA FIZYCZNA NA ZYWO");
-
-    glm::vec3 tip = physics.getTipWorldPosition();
-    float curTheta = physics.getCurrentInclinationDeg();
-    ImGui::Text("Koniec przekatnej: (%.3f, %.3f, %.3f) m", tip.x, tip.y, tip.z);
-    ImGui::Text("Biezace wychylenie theta: %.2f deg", curTheta);
-
-    glm::vec3 wBody = physics.W;
-    glm::vec3 wWorld = physics.getAngularVelocityWorld();
-    ImGui::Text("Predkosc katowa W (bryla):  (%.2f, %.2f, %.2f) rad/s  |W| = %.2f", wBody.x, wBody.y, wBody.z, glm::length(wBody));
-    ImGui::Text("Predkosc katowa W (scena):  (%.2f, %.2f, %.2f) rad/s", wWorld.x, wWorld.y, wWorld.z);
-
-    glm::vec3 lWorld = physics.getAngularMomentumWorld();
-    ImGui::Text("Moment pedu L (scena):      (%.2f, %.2f, %.2f) kg*m^2/s  Ly = %.3f", lWorld.x, lWorld.y, lWorld.z, lWorld.y);
-
-    float eKin = physics.getKineticEnergy();
-    float ePot = physics.getPotentialEnergy();
-    float eTot = physics.getTotalEnergy();
-    ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.2f, 1.0f), "Energia: E_kin = %.2f J | E_pot = %.2f J | E_tot = %.2f J", eKin, ePot, eTot);
-
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYKRESY");
-
-    if (ImGui::CollapsingHeader("1. Rzut trajektorii konca przekatnej (X-Z)", ImGuiTreeNodeFlags_DefaultOpen)) {
-        trajectoryPlot.render(ImVec2(-1.0f, 210.0f));
-    }
-
-    if (ImGui::CollapsingHeader("2. Zasada zachowania energii w czasie (E_kin, E_pot, E_tot)", ImGuiTreeNodeFlags_DefaultOpen)) {
-        energyPlot.render(ImVec2(-1.0f, 180.0f));
-    }
-
-    if (ImGui::CollapsingHeader("3. Predkosc katowa W(t)")) {
-        angularVelPlot.render(ImVec2(-1.0f, 180.0f));
-    }
-
-    if (ImGui::CollapsingHeader("4. Wychylenie przekatnej theta(t)")) {
-        inclinationPlot.render(ImVec2(-1.0f, 180.0f));
-    }
 }
 

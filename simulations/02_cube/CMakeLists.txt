@@ -4,7 +4,6 @@ add_executable(sim_02
     CubePhysics.cpp
     CubeMeshGenerator.cpp
     CubeSimUI.cpp
-    PlotWidget.cpp
 )
 
 target_include_directories(sim_02

@@ -80,23 +80,8 @@ glm::vec3 CubePhysics::getDiagonalWorld() const {
     return glm::mat3_cast(Q) * getDiagonalBody();
 }
 
-glm::vec3 CubePhysics::getDiagonalUnitWorld() const {
-    return glm::mat3_cast(Q) * getDiagonalUnitBody();
-}
-
 glm::vec3 CubePhysics::getTipWorldPosition() const {
     return getDiagonalWorld();
-}
-
-glm::vec3 CubePhysics::getCenterOfMassWorld() const {
-    return glm::mat3_cast(Q) * r_cm;
-}
-
-float CubePhysics::getCurrentInclinationDeg() const {
-    glm::vec3 d_hat_world = getDiagonalUnitWorld();
-    glm::vec3 upWorld = -glm::normalize(gravityDir);
-    float cosTheta = glm::clamp(glm::dot(d_hat_world, upWorld), -1.0f, 1.0f);
-    return std::acos(cosTheta) * (180.0f / static_cast<float>(M_PI));
 }
 
 void CubePhysics::applyOrientationFromDiagonal(float thetaDeg, float phiDeg, float psiDeg) {
@@ -162,8 +147,6 @@ void CubePhysics::reset() {
     applyAngularVelocityAroundDiagonal(initOmegaDiag, initOmegaPerp);
 
     clearTrajectory();
-    history.clear();
-    recordPoint();
 }
 
 void CubePhysics::clearTrajectory() {
@@ -256,52 +239,6 @@ void CubePhysics::update(float realDt) {
         timeAccumulator -= delta;
         stepsTaken++;
     }
-
-    recordPoint();
-}
-
-void CubePhysics::recordPoint() {
-    TelemetryPoint pt;
-    pt.t = t;
-    pt.eKin = getKineticEnergy();
-    pt.ePot = getPotentialEnergy();
-    pt.eTot = pt.eKin + pt.ePot;
-    pt.W = W;
-    pt.tipPos = getTipWorldPosition();
-    pt.thetaDeg = getCurrentInclinationDeg();
-
-    history.push_back(pt);
-    if (history.size() > maxHistoryPoints) {
-        history.erase(history.begin(), history.begin() + (history.size() - maxHistoryPoints));
-    }
-}
-
-float CubePhysics::getKineticEnergy() const {
-    return 0.5f * glm::dot(W, I * W);
-}
-
-float CubePhysics::getPotentialEnergy() const {
-    if (!gravityEnabled) return 0.0f;
-    glm::vec3 r_cm_w = getCenterOfMassWorld();
-    glm::vec3 upWorld = -glm::normalize(gravityDir);
-    float height = glm::dot(r_cm_w, upWorld);
-    return mass * gValue * height;
-}
-
-float CubePhysics::getTotalEnergy() const {
-    return getKineticEnergy() + getPotentialEnergy();
-}
-
-glm::vec3 CubePhysics::getAngularMomentumBody() const {
-    return I * W;
-}
-
-glm::vec3 CubePhysics::getAngularMomentumWorld() const {
-    return glm::mat3_cast(Q) * (I * W);
-}
-
-glm::vec3 CubePhysics::getAngularVelocityWorld() const {
-    return glm::mat3_cast(Q) * W;
 }
 
 void CubePhysics::loadPreset(CubeSimPreset preset) {

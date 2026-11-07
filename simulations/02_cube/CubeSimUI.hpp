@@ -1,7 +1,6 @@
 #pragma once
 #include "core/UI.hpp"
 #include "CubePhysics.hpp"
-#include "PlotWidget.hpp"
 #include <glm/glm.hpp>
 #include <memory>
 
@@ -37,24 +36,16 @@ public:
     CubeVisualSettings visual;
     Camera& camera;
 
-    // Plots
-    PlotWidget trajectoryPlot; // Horizontal plane X vs Z
-    PlotWidget energyPlot;     // E_kin, E_pot, E_total
-    PlotWidget angularVelPlot; // W_x, W_y, W_z
-    PlotWidget inclinationPlot;// Theta(t)
-
     int activePresetIdx = 0;
 
 public:
     CubeSimUI(int width, CubePhysics& phys, Camera& cam);
     ~CubeSimUI() override = default;
 
-    void updatePlotData();
     void renderUI(Window& window) override;
 
 private:
     void renderSimulationControls();
     void renderVisualizationTab();
     void renderPhysicsParametersTab();
-    void renderTelemetryAndPlotsTab();
 };

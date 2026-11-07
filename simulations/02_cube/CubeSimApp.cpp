@@ -44,11 +44,6 @@ void CubeSimApp::update(float dt) {
     if (physics.trajectory.size() >= 2) {
         CubeMeshGenerator::UpdateTrajectoryMesh(trajectoryMesh, physics.trajectory);
     }
-
-    // Refresh UI plot data buffers
-    if (cubeUI) {
-        cubeUI->updatePlotData();
-    }
 }
 
 void CubeSimApp::processInput() {
