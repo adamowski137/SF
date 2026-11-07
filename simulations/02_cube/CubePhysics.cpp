@@ -169,10 +169,6 @@ CubePhysics::Derivative CubePhysics::evaluateDerivative(const glm::quat& qState,
         torque = glm::cross(r_cm, mass * g_body);
     }
 
-    if (dampingCoeff > 0.0f) {
-        torque -= dampingCoeff * wState;
-    }
-
     // Euler's rotational equation in body frame:
     // I * dW = N + (I * W) x W
     // dW = invI * (N + cross(I * W, W))
@@ -251,7 +247,6 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initPsiDeg = 0.0f;
             initOmegaDiag = 5.0f;
             initOmegaPerp = 0.0f;
-            dampingCoeff = 0.0f;
             break;
 
         case CubeSimPreset::NutationLoops:
@@ -262,7 +257,6 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initPsiDeg = 0.0f;
             initOmegaDiag = 3.5f;
             initOmegaPerp = 0.3f; // perturbation causing looping nutation
-            dampingCoeff = 0.0f;
             break;
 
         case CubeSimPreset::FreeRigidBody:
@@ -272,7 +266,6 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initPsiDeg = 0.0f;
             initOmegaDiag = 2.5f;
             initOmegaPerp = 1.0f; // polhode / free torque-free rotation
-            dampingCoeff = 0.0f;
             break;
 
         case CubeSimPreset::PhysicalPendulum:
@@ -283,7 +276,6 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initPsiDeg = 0.0f;
             initOmegaDiag = 0.0f; // no spin, purely swinging under gravity
             initOmegaPerp = 0.0f;
-            dampingCoeff = 0.05f;
             break;
 
         case CubeSimPreset::SleepingTop:
@@ -294,7 +286,6 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initPsiDeg = 0.0f;
             initOmegaDiag = 7.0f; // vertical spin
             initOmegaPerp = 0.0f;
-            dampingCoeff = 0.0f;
             break;
     }
     reset();

@@ -29,9 +29,6 @@ public:
     float gValue = 9.81f; // m/s^2
     glm::vec3 gravityDir{ 0.0f, -1.0f, 0.0f }; // normalized gravity direction in world space
 
-    // --- Optional Damping ---
-    float dampingCoeff = 0.0f; // rotational air resistance torque: -c * W
-
     // --- Initial Condition Settings (Krok 1.3) ---
     float initThetaDeg = 30.0f;  // polar inclination of diagonal from vertical (degrees)
     float initPhiDeg = 0.0f;    // azimuth angle of tilt in horizontal plane (degrees)

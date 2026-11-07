@@ -195,12 +195,11 @@ void CubeSimUI::renderPhysicsParametersTab() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "GRAWITACJA I OPORY (Krok 1.3)");
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "GRAWITACJA (Krok 1.3)");
 
     ImGui::Checkbox("Grawitacja wlaczona", &physics.gravityEnabled);
     if (physics.gravityEnabled) {
         ImGui::SliderFloat("Przyspieszenie g [m/s^2]", &physics.gValue, 0.0f, 30.0f, "%.2f m/s^2");
     }
-    ImGui::SliderFloat("Tlumienie obrotu (drag)", &physics.dampingCoeff, 0.0f, 0.2f, "%.4f");
 }
 
