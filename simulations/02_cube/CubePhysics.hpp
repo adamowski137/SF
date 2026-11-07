@@ -33,8 +33,6 @@ public:
     glm::vec3 r_cm{ 0.5f, 0.5f, 0.5f }; // center of mass in body coordinates
     glm::mat3 I{ 1.0f }; // 3x3 inertia tensor with respect to corner
     glm::mat3 invI{ 1.0f }; // inverse inertia tensor
-    float I_diag = 0.0f; // principal moment of inertia along diagonal
-    float I_perp = 0.0f; // moment of inertia perpendicular to diagonal
 
     // --- Gravity ---
     bool gravityEnabled = true;

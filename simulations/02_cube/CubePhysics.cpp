@@ -66,9 +66,6 @@ void CubePhysics::updateInertiaTensor() {
     );
 
     invI = glm::inverse(I);
-
-    I_diag = (1.0f / 6.0f) * mass * a * a;
-    I_perp = (11.0f / 12.0f) * mass * a * a;
 }
 
 glm::vec3 CubePhysics::getDiagonalBody() const {

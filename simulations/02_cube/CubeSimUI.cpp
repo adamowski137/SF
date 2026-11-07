@@ -250,9 +250,6 @@ void CubeSimUI::renderPhysicsParametersTab() {
     ImGui::EndChild();
     ImGui::PopStyleColor();
 
-    ImGui::Text("Moment wzdluz przekatnej (I_diag): %.4f kg*m^2", physics.I_diag);
-    ImGui::Text("Moment poprzeczny (I_perp):       %.4f kg*m^2", physics.I_perp);
-
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYCHYLENIE SZESCIANU I PREDKOSC (Krok 1.3)");
