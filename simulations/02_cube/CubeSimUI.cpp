@@ -157,11 +157,11 @@ void CubeSimUI::renderSimulationControls() {
 
     // Presets
     const char* presets[] = {
-        "1. Precesja regularna (bączek symetryczny)",
-        "2. Pętle nutacji (z zaburzeniem poprzecznym)",
-        "3. Swobodny obrót bez grawitacji (Poinsot)",
-        "4. Wahadło fizyczne (brak wirowania)",
-        "5. Bączek śpiący (duża prędkość, pionowo)"
+        "1. Precesja regularna (baczek symetryczny)",
+        "2. Petle nutacji (z zaburzeniem poprzecznym)",
+        "3. Swobodny obrot bez grawitacji (Poinsot)",
+        "4. Wahadlo fizyczne (brak wirowania)",
+        "5. Baczek spiacy (duza predkosc, pionowo)"
     };
     if (ImGui::Combo("Scenariusz (Preset)", &activePresetIdx, presets, IM_ARRAYSIZE(presets))) {
         physics.loadPreset(static_cast<CubeSimPreset>(activePresetIdx));
@@ -242,8 +242,8 @@ void CubeSimUI::renderPhysicsParametersTab() {
     ImGui::Text("Dlugosc przekatnej: %.3f m", glm::length(physics.getDiagonalBody()));
 
     ImGui::Spacing();
-    ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "TENSOR BEZWŁADNOSCI I WZGLĘDEM NAROŻA:");
-    ImGui::TextDisabled("Automatycznie przeliczany z wymiarów i gęstości:");
+    ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "TENSOR BEZWLADNOSCI I WZGLEDEM NAROZA:");
+    ImGui::TextDisabled("Automatycznie przeliczany z wymiarow i gestosci:");
 
     // Display 3x3 inertia tensor matrix
     const glm::mat3& matI = physics.I;
@@ -265,7 +265,7 @@ void CubeSimUI::renderPhysicsParametersTab() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYCHYLENIE SZESCIANU I PRĘDKOŚĆ (Krok 1.3)");
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYCHYLENIE SZESCIANU I PREDKOSC (Krok 1.3)");
 
     ImGui::SliderFloat("Wychylenie przekatnej theta [deg]", &physics.initThetaDeg, 0.0f, 179.0f, "%.1f deg");
     ImGui::SliderFloat("Azymut przekatnej phi [deg]", &physics.initPhiDeg, 0.0f, 360.0f, "%.1f deg");

@@ -326,7 +326,7 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initThetaDeg = 30.0f;
             initPhiDeg = 0.0f;
             initPsiDeg = 0.0f;
-            initOmegaDiag = 45.0f;
+            initOmegaDiag = 5.0f;
             initOmegaPerp = 0.0f;
             dampingCoeff = 0.0f;
             break;
@@ -337,8 +337,8 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initThetaDeg = 35.0f;
             initPhiDeg = 0.0f;
             initPsiDeg = 0.0f;
-            initOmegaDiag = 30.0f;
-            initOmegaPerp = 2.5f; // perturbation causing looping nutation
+            initOmegaDiag = 3.5f;
+            initOmegaPerp = 0.3f; // perturbation causing looping nutation
             dampingCoeff = 0.0f;
             break;
 
@@ -347,8 +347,8 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initThetaDeg = 45.0f;
             initPhiDeg = 20.0f;
             initPsiDeg = 0.0f;
-            initOmegaDiag = 20.0f;
-            initOmegaPerp = 8.0f; // polhode / free torque-free rotation
+            initOmegaDiag = 2.5f;
+            initOmegaPerp = 1.0f; // polhode / free torque-free rotation
             dampingCoeff = 0.0f;
             break;
 
@@ -369,7 +369,7 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initThetaDeg = 0.1f; // almost straight upright
             initPhiDeg = 0.0f;
             initPsiDeg = 0.0f;
-            initOmegaDiag = 60.0f; // fast vertical spin
+            initOmegaDiag = 7.0f; // vertical spin
             initOmegaPerp = 0.0f;
             dampingCoeff = 0.0f;
             break;
