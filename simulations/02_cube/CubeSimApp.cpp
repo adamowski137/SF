@@ -20,7 +20,6 @@ CubeSimApp::CubeSimApp(int width, int height, int ui_width)
 
 void CubeSimApp::init() {
     cornerCubeMesh = CubeMeshGenerator::GetCornerCubeMesh();
-    cornerWireframeMesh = CubeMeshGenerator::GetCornerCubeWireframeMesh();
     gridMesh = CubeMeshGenerator::GetGridMesh(12.0f, 0.5f);
     cylinderMesh = MeshGenerator::GetCylinderMesh(1.0f, 1.0f, 24, 2);
     sphereMesh = MeshGenerator::GetSphereMesh();
@@ -93,11 +92,6 @@ void CubeSimApp::renderScene() {
     // Solid cube
     if (cubeUI->visual.showCube && cornerCubeMesh) {
         renderer->drawMeshPhong(cornerCubeMesh, modelCube, cubeUI->visual.cubeColor);
-    }
-
-    // Wireframe edges
-    if (cubeUI->visual.showWireframe && cornerWireframeMesh) {
-        renderer->drawLines(cornerWireframeMesh, modelCube, cubeUI->visual.wireframeColor, 2.5f);
     }
 
     // 5. Cube diagonal from fixed corner to free tip (Krok 1.1)

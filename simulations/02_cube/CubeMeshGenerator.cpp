@@ -87,27 +87,6 @@ std::shared_ptr<Mesh> CubeMeshGenerator::GetCornerCubeMesh() {
     return Mesh::createMesh(vertices, indices, { {3, GL_FLOAT}, {3, GL_FLOAT} });
 }
 
-std::shared_ptr<Mesh> CubeMeshGenerator::GetCornerCubeWireframeMesh() {
-    std::vector<float> vertices = {
-        0.0f, 0.0f, 0.0f, // 0
-        1.0f, 0.0f, 0.0f, // 1
-        1.0f, 1.0f, 0.0f, // 2
-        0.0f, 1.0f, 0.0f, // 3
-        0.0f, 0.0f, 1.0f, // 4
-        1.0f, 0.0f, 1.0f, // 5
-        1.0f, 1.0f, 1.0f, // 6
-        0.0f, 1.0f, 1.0f  // 7
-    };
-
-    std::vector<unsigned> indices = {
-        0, 1,  1, 2,  2, 3,  3, 0, // back face
-        4, 5,  5, 6,  6, 7,  7, 4, // front face
-        0, 4,  1, 5,  2, 6,  3, 7  // connecting edges
-    };
-
-    return Mesh::createMesh(vertices, indices, { {3, GL_FLOAT} });
-}
-
 std::shared_ptr<Mesh> CubeMeshGenerator::GetPlaneMesh(float size) {
     float h = size * 0.5f;
     std::vector<float> vertices = {

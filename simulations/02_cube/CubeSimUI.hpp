@@ -8,7 +8,6 @@ class Camera;
 
 struct CubeVisualSettings {
     bool showCube = true;
-    bool showWireframe = true;
     bool showDiagonal = true;
     bool showTrajectory = true;
     bool showGravityVector = true;
@@ -16,7 +15,6 @@ struct CubeVisualSettings {
     bool showMarkers = true;
 
     glm::vec4 cubeColor{ 0.95f, 0.55f, 0.15f, 0.90f };      // warm amber
-    glm::vec4 wireframeColor{ 0.12f, 0.12f, 0.14f, 1.0f }; // sharp dark outline
     glm::vec4 diagonalColor{ 1.00f, 0.88f, 0.05f, 1.0f };   // bright gold
     glm::vec4 trajectoryColor{ 0.00f, 0.85f, 1.00f, 1.0f }; // cyan
     glm::vec4 gravityColor{ 0.20f, 0.90f, 0.35f, 1.0f };    // green

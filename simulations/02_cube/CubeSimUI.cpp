@@ -105,8 +105,6 @@ void CubeSimUI::renderVisualizationTab() {
     ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "1. WYSWIETLANIE NA ZYCZENIE (Krok 1.1)");
 
     ImGui::Checkbox("Szescian (bryla)", &visual.showCube);
-    ImGui::SameLine(180);
-    ImGui::Checkbox("Krawedzie (wireframe)", &visual.showWireframe);
 
     ImGui::Checkbox("Przekatna szescianu (z narroza)", &visual.showDiagonal);
     ImGui::Checkbox("Trajektoria swobodnego konca", &visual.showTrajectory);
@@ -119,15 +117,14 @@ void CubeSimUI::renderVisualizationTab() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "PARAMETRY TRAJEKTORII (Krok 1.3)");
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "PARAMETRY TRAJEKTORII");
 
-    if (ImGui::SliderInt("Dlugosc trajektorii n", &physics.trajectoryLengthN, 20, 5000)) {
+    if (ImGui::SliderInt("Dlugosc trajektorii n", &physics.trajectoryLengthN, 1000, 50000)) {
         if (static_cast<int>(physics.trajectory.size()) > physics.trajectoryLengthN) {
             size_t excess = physics.trajectory.size() - physics.trajectoryLengthN;
             physics.trajectory.erase(physics.trajectory.begin(), physics.trajectory.begin() + excess);
         }
     }
-    ImGui::Text("Aktualnie zgromadzonych punktow: %zu", physics.trajectory.size());
 
     if (ImGui::Button("Wyczysc trajektorie")) {
         physics.clearTrajectory();

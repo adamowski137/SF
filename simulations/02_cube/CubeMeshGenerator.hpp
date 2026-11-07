@@ -10,9 +10,6 @@ public:
     // Solid cube with corner at (0, 0, 0) extending to (1, 1, 1), with face normals
     static std::shared_ptr<Mesh> GetCornerCubeMesh();
 
-    // Wireframe edges of the corner-anchored unit cube
-    static std::shared_ptr<Mesh> GetCornerCubeWireframeMesh();
-
     // Horizontal quad mesh (semi-transparent plane perpendicular to vertical/gravity)
     static std::shared_ptr<Mesh> GetPlaneMesh(float size = 8.0f);
 
