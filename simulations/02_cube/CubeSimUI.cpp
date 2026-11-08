@@ -26,18 +26,18 @@ void CubeSimUI::renderUI(Window& window) {
 
     ImGui::Begin("CubeSimControlPanel", nullptr, windowFlags);
 
-    ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f), "LAB 2: BACZEK (SZESCIAN W NARROZU)");
-    ImGui::TextDisabled("Symulacja ruchu obrotowego szescianu (Euler + RK4)");
+    ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f), "LAB 2: BACZEK");
+    ImGui::TextDisabled("Szescian: Euler + RK4");
     ImGui::Separator();
 
     renderSimulationControls();
 
     if (ImGui::BeginTabBar("CubeSimTabs")) {
-        if (ImGui::BeginTabItem("Wizualizacja (Krok 1)")) {
+        if (ImGui::BeginTabItem("Wizualizacja")) {
             renderVisualizationTab();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Parametry i Fizyka (Krok 2)")) {
+        if (ImGui::BeginTabItem("Parametry i Fizyka")) {
             renderPhysicsParametersTab();
             ImGui::EndTabItem();
         }
@@ -104,16 +104,16 @@ void CubeSimUI::renderVisualizationTab() {
     ImGui::Spacing();
     ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "1. WYSWIETLANIE NA ZYCZENIE (Krok 1.1)");
 
-    ImGui::Checkbox("Szescian (bryla)", &visual.showCube);
+    ImGui::Checkbox("Szescian", &visual.showCube);
 
-    ImGui::Checkbox("Przekatna szescianu (z narroza)", &visual.showDiagonal);
+    ImGui::Checkbox("Przekatna szescianu", &visual.showDiagonal);
     ImGui::Checkbox("Trajektoria swobodnego konca", &visual.showTrajectory);
 
-    ImGui::Checkbox("Kierunek grawitacji (wektor)", &visual.showGravityVector);
+    ImGui::Checkbox("Kierunek grawitacji", &visual.showGravityVector);
     ImGui::SameLine(230);
     ImGui::Checkbox("Polprzezroczysta plaszczyzna", &visual.showPerpendicularPlane);
 
-    ImGui::Checkbox("Punkty narozne (narroze i koniec)", &visual.showMarkers);
+    ImGui::Checkbox("Punkty narozne", &visual.showMarkers);
 
     ImGui::Spacing();
     ImGui::Separator();
@@ -133,25 +133,24 @@ void CubeSimUI::renderVisualizationTab() {
 
 void CubeSimUI::renderPhysicsParametersTab() {
     ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYMIAR I GESTOSC SZESCIANU (Krok 1.3)");
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYMIAR I GESTOSC SZESCIANU");
 
     float side = physics.a;
-    if (ImGui::SliderFloat("Dlugosc boku a [m]", &side, 0.2f, 3.0f, "%.2f m")) {
+    if (ImGui::SliderFloat("Dlugosc boku", &side, 0.2f, 3.0f, "%.2f m")) {
         physics.setSideLength(side);
     }
 
     float rho = physics.rho;
-    if (ImGui::SliderFloat("Gestosc rho [kg/m^3]", &rho, 10.0f, 5000.0f, "%.0f kg/m^3")) {
+    if (ImGui::SliderFloat("Gestosc", &rho, 10.0f, 5000.0f, "%.0f kg/m^3")) {
         physics.setDensity(rho);
     }
 
-    ImGui::Text("Masa calkowita M: %.2f kg", physics.mass);
-    ImGui::Text("Srodek masy (w bryle): (%.2f, %.2f, %.2f) m", physics.r_cm.x, physics.r_cm.y, physics.r_cm.z);
-    ImGui::Text("Dlugosc przekatnej: %.3f m", glm::length(physics.getDiagonalBody()));
+    ImGui::Text("Masa calkowita: %.2f", physics.mass);
+    ImGui::Text("Srodek masy: (%.2f, %.2f, %.2f)", physics.r_cm.x, physics.r_cm.y, physics.r_cm.z);
+    ImGui::Text("Dlugosc przekatnej: %.3f", glm::length(physics.getDiagonalBody()));
 
     ImGui::Spacing();
     ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "TENSOR BEZWLADNOSCI I WZGLEDEM NAROZA:");
-    ImGui::TextDisabled("Automatycznie przeliczany z wymiarow i gestosci:");
 
     // Display 3x3 inertia tensor matrix
     const glm::mat3& matI = physics.I;
@@ -170,15 +169,15 @@ void CubeSimUI::renderPhysicsParametersTab() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYCHYLENIE SZESCIANU I PREDKOSC (Krok 1.3)");
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "WYCHYLENIE SZESCIANU I PREDKOSC");
 
-    ImGui::SliderFloat("Wychylenie przekatnej theta [deg]", &physics.initThetaDeg, 0.0f, 179.0f, "%.1f deg");
-    ImGui::SliderFloat("Azymut przekatnej phi [deg]", &physics.initPhiDeg, 0.0f, 360.0f, "%.1f deg");
-    ImGui::SliderFloat("Obrot wlasny psi [deg]", &physics.initPsiDeg, 0.0f, 360.0f, "%.1f deg");
+    ImGui::SliderFloat("Wychylenie przekatnej [deg]", &physics.initThetaDeg, 0.0f, 179.0f, "%.1f deg");
+    ImGui::SliderFloat("Azymut przekatnej [deg]", &physics.initPhiDeg, 0.0f, 360.0f, "%.1f deg");
+    ImGui::SliderFloat("Obrot wlasny [deg]", &physics.initPsiDeg, 0.0f, 360.0f, "%.1f deg");
 
     ImGui::Spacing();
-    ImGui::SliderFloat("Predkosc katowa wokol przekatnej [rad/s]", &physics.initOmegaDiag, -150.0f, 150.0f, "%.1f rad/s");
-    ImGui::SliderFloat("Zaburzenie poprzeczne W_perp [rad/s]", &physics.initOmegaPerp, -30.0f, 30.0f, "%.1f rad/s");
+    ImGui::SliderFloat("Predkosc katowa [rad/s]", &physics.initOmegaDiag, -150.0f, 150.0f, "%.1f rad/s");
+    ImGui::SliderFloat("Zaburzenie poprzeczne [rad/s]", &physics.initOmegaPerp, -30.0f, 30.0f, "%.1f rad/s");
 
     if (ImGui::Button("Zastosuj do stanu poczatkowego i Reset")) {
         physics.reset();
@@ -195,11 +194,10 @@ void CubeSimUI::renderPhysicsParametersTab() {
 
     ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "GRAWITACJA (Krok 1.3)");
+    ImGui::TextColored(ImVec4(0.4f, 0.85f, 1.0f, 1.0f), "GRAWITACJA");
 
     ImGui::Checkbox("Grawitacja wlaczona", &physics.gravityEnabled);
     if (physics.gravityEnabled) {
         ImGui::SliderFloat("Przyspieszenie g [m/s^2]", &physics.gValue, 0.0f, 30.0f, "%.2f m/s^2");
     }
 }
-
