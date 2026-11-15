@@ -30,10 +30,6 @@ void CubePhysics::updateInertiaTensor() {
     float diagLen = a * std::sqrt(3.0f);
     r_cm = glm::vec3(0.0f, diagLen * 0.5f, 0.0f);
 
-    // In the local frame where the cube corner is at (0,0,0) and the main
-    // diagonal lies along the Y axis, the axes are principal axes of inertia:
-    // I_yy = (1/6) * mass * a^2 (along the diagonal)
-    // I_xx = I_zz = (11/12) * mass * a^2 (perpendicular to the diagonal)
     float I_perp = (11.0f / 12.0f) * mass * a * a;
     float I_diag = (1.0f / 6.0f) * mass * a * a;
 
@@ -43,7 +39,11 @@ void CubePhysics::updateInertiaTensor() {
         0.0f,   0.0f,   I_perp
     );
 
-    invI = glm::inverse(I);
+    invI = glm::mat3(
+        1.0f / I_perp, 0.0f,          0.0f,
+        0.0f,          1.0f / I_diag, 0.0f,
+        0.0f,          0.0f,          1.0f / I_perp
+    );
 }
 
 glm::vec3 CubePhysics::getDiagonalBody() const {
@@ -160,12 +160,10 @@ void CubePhysics::step() {
     W += (h / 6.0f) * (k1.dW + 2.0f * k2.dW + 2.0f * k3.dW + k4.dW);
     Q += (h / 6.0f) * (k1.dQ + 2.0f * k2.dQ + 2.0f * k3.dQ + k4.dQ);
 
-    // Normalize quaternion Q_{i+1} as required by lab specification
     Q = glm::normalize(Q);
 
     t += h;
 
-    // Record trajectory point
     glm::vec3 currentTip = getTipWorldPosition();
     trajectory.push_back(currentTip);
     if (static_cast<int>(trajectory.size()) > trajectoryLengthN) {
