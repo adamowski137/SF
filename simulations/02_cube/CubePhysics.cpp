@@ -6,30 +6,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace {
-    glm::quat createRotationBetweenVectors(const glm::vec3& u, const glm::vec3& v) {
-        glm::vec3 u_norm = glm::normalize(u);
-        glm::vec3 v_norm = glm::normalize(v);
-        float cosTheta = glm::clamp(glm::dot(u_norm, v_norm), -1.0f, 1.0f);
-
-        if (cosTheta > 0.999999f) {
-            return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-        }
-        if (cosTheta < -0.999999f) {
-            // 180 degree rotation: pick an orthogonal axis
-            glm::vec3 ortho = glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), u_norm);
-            if (glm::dot(ortho, ortho) < 0.01f) {
-                ortho = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), u_norm);
-            }
-            return glm::angleAxis(static_cast<float>(M_PI), glm::normalize(ortho));
-        }
-
-        glm::vec3 axis = glm::cross(u_norm, v_norm);
-        float angle = std::acos(cosTheta);
-        return glm::angleAxis(angle, glm::normalize(axis));
-    }
-}
-
 CubePhysics::CubePhysics() {
     updateInertiaTensor();
     reset();
@@ -51,29 +27,31 @@ void CubePhysics::setDensity(float newRho) {
 
 void CubePhysics::updateInertiaTensor() {
     mass = rho * a * a * a;
-    r_cm = glm::vec3(a * 0.5f);
+    float diagLen = a * std::sqrt(3.0f);
+    r_cm = glm::vec3(0.0f, diagLen * 0.5f, 0.0f);
 
-    float diag = (2.0f / 3.0f) * mass * a * a;
-    float offDiag = -0.25f * mass * a * a;
+    // In the local frame where the cube corner is at (0,0,0) and the main
+    // diagonal lies along the Y axis, the axes are principal axes of inertia:
+    // I_yy = (1/6) * mass * a^2 (along the diagonal)
+    // I_xx = I_zz = (11/12) * mass * a^2 (perpendicular to the diagonal)
+    float I_perp = (11.0f / 12.0f) * mass * a * a;
+    float I_diag = (1.0f / 6.0f) * mass * a * a;
 
-    // GLM mat3 is column-major: mat3(col0, col1, col2)
-    // For a uniform cube anchored at corner (0,0,0):
-    // Ixx = Iyy = Izz = (2/3)*mass*a^2, Ixy = Ixz = Iyz = -0.25*mass*a^2
     I = glm::mat3(
-        diag, offDiag, offDiag,
-        offDiag, diag, offDiag,
-        offDiag, offDiag, diag
+        I_perp, 0.0f,   0.0f,
+        0.0f,   I_diag, 0.0f,
+        0.0f,   0.0f,   I_perp
     );
 
     invI = glm::inverse(I);
 }
 
 glm::vec3 CubePhysics::getDiagonalBody() const {
-    return glm::vec3(a);
+    return glm::vec3(0.0f, a * std::sqrt(3.0f), 0.0f);
 }
 
 glm::vec3 CubePhysics::getDiagonalUnitBody() const {
-    return glm::normalize(glm::vec3(1.0f));
+    return glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
 glm::vec3 CubePhysics::getDiagonalWorld() const {
@@ -89,45 +67,20 @@ void CubePhysics::applyOrientationFromDiagonal(float thetaDeg, float phiDeg, flo
     float phiRad = phiDeg * static_cast<float>(M_PI) / 180.0f;
     float psiRad = psiDeg * static_cast<float>(M_PI) / 180.0f;
 
-    glm::vec3 d_body = getDiagonalUnitBody();
-    glm::vec3 upWorld = -glm::normalize(gravityDir); // normally (0, 1, 0)
+    // In the local frame, the cube diagonal already lies along +Y (0, 1, 0).
+    // Step 1: Spin around the Y axis (diagonal) by psi
+    glm::quat Q_spin = glm::angleAxis(psiRad, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    // Step 1: Align body diagonal with upWorld
-    glm::quat Q_align = createRotationBetweenVectors(d_body, upWorld);
-
-    // Step 2: Spin around upWorld / diagonal
-    glm::quat Q_spin = glm::angleAxis(psiRad, upWorld);
-
-    // Step 3: Tilt by theta in direction phi
-    // If upWorld = (0, 1, 0): tiltAxis is (-sin(phi), 0, cos(phi))
-    glm::vec3 horizRef(1.0f, 0.0f, 0.0f);
-    if (std::abs(glm::dot(horizRef, upWorld)) > 0.9f) {
-        horizRef = glm::vec3(0.0f, 0.0f, 1.0f);
-    }
-    glm::vec3 horizX = glm::normalize(horizRef - upWorld * glm::dot(horizRef, upWorld));
-    glm::vec3 horizZ = glm::normalize(glm::cross(upWorld, horizX));
-
-    glm::vec3 tiltAxis = -std::sin(phiRad) * horizX + std::cos(phiRad) * horizZ;
+    // Step 2: Tilt by theta in azimuth direction phi
+    glm::vec3 tiltAxis(-std::sin(phiRad), 0.0f, std::cos(phiRad));
     glm::quat Q_tilt = glm::angleAxis(thetaRad, glm::normalize(tiltAxis));
 
-    Q = glm::normalize(Q_tilt * Q_spin * Q_align);
+    Q = glm::normalize(Q_tilt * Q_spin);
 }
 
 void CubePhysics::applyAngularVelocityAroundDiagonal(float omegaDiag, float omegaPerp) {
-    glm::vec3 d_hat = getDiagonalUnitBody();
-    glm::vec3 w_spin = omegaDiag * d_hat;
-
-    glm::vec3 w_trans(0.0f);
-    if (std::abs(omegaPerp) > 1e-6f) {
-        glm::vec3 ref(1.0f, 0.0f, 0.0f);
-        if (std::abs(glm::dot(ref, d_hat)) > 0.9f) {
-            ref = glm::vec3(0.0f, 1.0f, 0.0f);
-        }
-        glm::vec3 perpAxis = glm::normalize(glm::cross(d_hat, ref));
-        w_trans = omegaPerp * perpAxis;
-    }
-
-    W = w_spin + w_trans;
+    // In the local frame, the Y axis is the cube diagonal and X/Z are perpendicular principal axes
+    W = glm::vec3(omegaPerp, omegaDiag, 0.0f);
 }
 
 void CubePhysics::setInitialConditions(float thetaDeg, float phiDeg, float omegaDiag, float psiDeg, float omegaPerp) {

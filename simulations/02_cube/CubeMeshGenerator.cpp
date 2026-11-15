@@ -73,6 +73,20 @@ std::shared_ptr<Mesh> CubeMeshGenerator::GetCornerCubeMesh() {
         0.0f, 1.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
     };
 
+    // Rotate the [0,1]^3 cube so its main diagonal (1,1,1) lies along the local +Y axis (0, sqrt(3), 0)
+    glm::quat rotToY = rotationBetweenVectors(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat3 R = glm::mat3_cast(rotToY);
+    for (size_t i = 0; i < vertices.size(); i += 6) {
+        glm::vec3 pos = R * glm::vec3(vertices[i + 0], vertices[i + 1], vertices[i + 2]);
+        glm::vec3 norm = R * glm::vec3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
+        vertices[i + 0] = pos.x;
+        vertices[i + 1] = pos.y;
+        vertices[i + 2] = pos.z;
+        vertices[i + 3] = norm.x;
+        vertices[i + 4] = norm.y;
+        vertices[i + 5] = norm.z;
+    }
+
     std::vector<unsigned> indices;
     for (unsigned face = 0; face < 6; ++face) {
         unsigned b = face * 4;

@@ -7,7 +7,7 @@ class Mesh;
 
 class CubeMeshGenerator {
 public:
-    // Solid cube with corner at (0, 0, 0) extending to (1, 1, 1), with face normals
+    // Solid cube with corner at (0, 0, 0) and main diagonal along +Y axis (0, sqrt(3), 0), with face normals
     static std::shared_ptr<Mesh> GetCornerCubeMesh();
 
     // Horizontal quad mesh (semi-transparent plane perpendicular to vertical/gravity)

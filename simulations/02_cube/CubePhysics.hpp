@@ -18,7 +18,7 @@ public:
 
     // Derived physical properties (updated automatically)
     float mass = 500.0f; // M = rho * a^3 (kg)
-    glm::vec3 r_cm{ 0.5f, 0.5f, 0.5f }; // center of mass in body coordinates
+    glm::vec3 r_cm{ 0.0f, 0.8660254f, 0.0f }; // center of mass in body coordinates (0, a*sqrt(3)/2, 0)
     glm::mat3 I{ 1.0f }; // 3x3 inertia tensor with respect to corner
     glm::mat3 invI{ 1.0f }; // inverse inertia tensor
 
