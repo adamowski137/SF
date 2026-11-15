@@ -144,7 +144,6 @@ void CubeSimUI::renderPhysicsParametersTab() {
     }
 
     ImGui::Text("Masa calkowita: %.2f", physics.mass);
-    ImGui::Text("Srodek masy: (%.2f, %.2f, %.2f)", physics.r_cm.x, physics.r_cm.y, physics.r_cm.z);
     ImGui::Text("Dlugosc przekatnej: %.3f", glm::length(physics.getDiagonalBody()));
 
     ImGui::Spacing();
@@ -179,15 +178,6 @@ void CubeSimUI::renderPhysicsParametersTab() {
 
     if (ImGui::Button("Zastosuj do stanu poczatkowego i Reset")) {
         physics.reset();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Ustaw orientacje teraz")) {
-        physics.applyOrientationFromDiagonal(physics.initThetaDeg, physics.initPhiDeg, physics.initPsiDeg);
-        physics.clearTrajectory();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Ustaw predkosc teraz")) {
-        physics.applyAngularVelocityAroundDiagonal(physics.initOmegaDiag, physics.initOmegaPerp);
     }
 
     ImGui::Spacing();
