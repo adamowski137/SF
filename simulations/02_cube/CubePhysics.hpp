@@ -6,10 +6,8 @@
 
 enum class CubeSimPreset {
     RegularPrecession = 0,
-    NutationLoops = 1,
-    FreeRigidBody = 2,
-    PhysicalPendulum = 3,
-    SleepingTop = 4
+    PhysicalPendulum = 1,
+    SleepingTop = 2
 };
 
 class CubePhysics {

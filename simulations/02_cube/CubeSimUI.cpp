@@ -88,8 +88,6 @@ void CubeSimUI::renderSimulationControls() {
     // Presets
     const char* presets[] = {
         "1. Precesja regularna (baczek symetryczny)",
-        "2. Petle nutacji (z zaburzeniem poprzecznym)",
-        "3. Swobodny obrot bez grawitacji (Poinsot)",
         "4. Wahadlo fizyczne (brak wirowania)",
         "5. Baczek spiacy (duza predkosc, pionowo)"
     };

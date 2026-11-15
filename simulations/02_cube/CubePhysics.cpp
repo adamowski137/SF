@@ -249,25 +249,6 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initOmegaPerp = 0.0f;
             break;
 
-        case CubeSimPreset::NutationLoops:
-            gravityEnabled = true;
-            gValue = 9.81f;
-            initThetaDeg = 35.0f;
-            initPhiDeg = 0.0f;
-            initPsiDeg = 0.0f;
-            initOmegaDiag = 3.5f;
-            initOmegaPerp = 0.3f; // perturbation causing looping nutation
-            break;
-
-        case CubeSimPreset::FreeRigidBody:
-            gravityEnabled = false;
-            initThetaDeg = 45.0f;
-            initPhiDeg = 20.0f;
-            initPsiDeg = 0.0f;
-            initOmegaDiag = 2.5f;
-            initOmegaPerp = 1.0f; // polhode / free torque-free rotation
-            break;
-
         case CubeSimPreset::PhysicalPendulum:
             gravityEnabled = true;
             gValue = 9.81f;
