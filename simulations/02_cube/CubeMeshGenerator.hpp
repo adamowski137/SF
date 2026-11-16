@@ -17,7 +17,7 @@ public:
     static std::shared_ptr<Mesh> GetGridMesh(float size = 10.0f, float step = 0.5f);
 
     // Cone mesh (base at Y=0, apex at Y=h, radius r)
-    static std::shared_ptr<Mesh> GetConeMesh(float r = 0.08f, float h = 0.2f, int div_circ = 24);
+    static std::shared_ptr<Mesh> GetConeMesh(float r = 1.0f, float h = 1.0f, int div_circ = 24);
 
     // Simple 2-point unit line (0,0,0) to (0,1,0)
     static std::shared_ptr<Mesh> GetUnitLineMesh();

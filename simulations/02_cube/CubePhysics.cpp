@@ -67,11 +67,10 @@ void CubePhysics::applyOrientationFromDiagonal(float thetaDeg, float phiDeg, flo
     float phiRad = phiDeg * static_cast<float>(M_PI) / 180.0f;
     float psiRad = psiDeg * static_cast<float>(M_PI) / 180.0f;
 
-    // In the local frame, the cube diagonal already lies along +Y (0, 1, 0).
-    // Step 1: Spin around the Y axis (diagonal) by psi
+    // obrot wokol wlasnej osi
     glm::quat Q_spin = glm::angleAxis(psiRad, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    // Step 2: Tilt by theta in azimuth direction phi
+    // obrot wzgledem wspolrzednych biegunowych
     glm::vec3 tiltAxis(-std::sin(phiRad), 0.0f, std::cos(phiRad));
     glm::quat Q_tilt = glm::angleAxis(thetaRad, glm::normalize(tiltAxis));
 
@@ -79,7 +78,6 @@ void CubePhysics::applyOrientationFromDiagonal(float thetaDeg, float phiDeg, flo
 }
 
 void CubePhysics::applyAngularVelocityAroundDiagonal(float omegaDiag, float omegaPerp) {
-    // In the local frame, the Y axis is the cube diagonal and X/Z are perpendicular principal axes
     W = glm::vec3(omegaPerp, omegaDiag, 0.0f);
 }
 
@@ -111,9 +109,6 @@ CubePhysics::Derivative CubePhysics::evaluateDerivative(const glm::quat& qState,
     glm::quat qNorm = glm::normalize(qState);
     glm::mat3 R = glm::mat3_cast(qNorm);
 
-    // Gravity force and torque in body frame:
-    // In world frame: F_g = mass * (gValue * gravityDir)
-    // In body frame: g_body = R^T * (gValue * gravityDir)
     glm::vec3 gWorld = gravityDir * gValue;
     glm::vec3 torque(0.0f);
 
@@ -122,15 +117,10 @@ CubePhysics::Derivative CubePhysics::evaluateDerivative(const glm::quat& qState,
         torque = glm::cross(r_cm, mass * g_body);
     }
 
-    // Euler's rotational equation in body frame:
-    // I * dW = N + (I * W) x W
-    // dW = invI * (N + cross(I * W, W))
     glm::vec3 Iw = I * wState;
     glm::vec3 gyroscopic = glm::cross(Iw, wState);
     glm::vec3 dW = invI * (torque + gyroscopic);
 
-    // Quaternion kinematic differential equation:
-    // dQ = 0.5 * Q * (0, W)
     glm::quat w_quat(0.0f, wState.x, wState.y, wState.z);
     glm::quat dQ = 0.5f * (qNorm * w_quat);
 
@@ -142,7 +132,6 @@ void CubePhysics::step() {
 
     float h = delta;
 
-    // Runge-Kutta 4 simultaneous integration for Q and W:
     Derivative k1 = evaluateDerivative(Q, W);
 
     glm::quat Q2 = Q + 0.5f * h * k1.dQ;
@@ -206,17 +195,17 @@ void CubePhysics::loadPreset(CubeSimPreset preset) {
             initThetaDeg = 60.0f;
             initPhiDeg = 0.0f;
             initPsiDeg = 0.0f;
-            initOmegaDiag = 0.0f; // no spin, purely swinging under gravity
+            initOmegaDiag = 0.0f;
             initOmegaPerp = 0.0f;
             break;
 
         case CubeSimPreset::SleepingTop:
             gravityEnabled = true;
             gValue = 9.81f;
-            initThetaDeg = 0.1f; // almost straight upright
+            initThetaDeg = 0.1f;
             initPhiDeg = 0.0f;
             initPsiDeg = 0.0f;
-            initOmegaDiag = 7.0f; // vertical spin
+            initOmegaDiag = 7.0f;
             initOmegaPerp = 0.0f;
             break;
     }

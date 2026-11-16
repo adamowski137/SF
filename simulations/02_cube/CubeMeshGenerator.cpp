@@ -164,8 +164,8 @@ std::shared_ptr<Mesh> CubeMeshGenerator::GetConeMesh(float r, float h, int div_c
 
     for (int i = 0; i < div_circ; ++i) {
         indices.push_back(apex_idx);
-        indices.push_back(i + 1);
         indices.push_back(i + 2);
+        indices.push_back(i + 1);
     }
 
     // Base cap
@@ -184,8 +184,8 @@ std::shared_ptr<Mesh> CubeMeshGenerator::GetConeMesh(float r, float h, int div_c
 
     for (int i = 0; i < div_circ; ++i) {
         indices.push_back(base_center_idx);
-        indices.push_back(base_ring_start + i + 1);
         indices.push_back(base_ring_start + i);
+        indices.push_back(base_ring_start + i + 1);
     }
 
     return Mesh::createMesh(vertices, indices, { {3, GL_FLOAT}, {3, GL_FLOAT} });
@@ -254,9 +254,8 @@ glm::mat4 CubeMeshGenerator::ComputeConeTransform(const glm::vec3& tipPos, const
 
     // Tip is at tipPos, base is at tipPos - normDir * length
     glm::vec3 base = tipPos - normDir * length;
-    glm::vec3 mid = 0.5f * (base + tipPos);
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), mid) *
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), base) *
                       glm::mat4_cast(rot) *
                       glm::scale(glm::mat4(1.0f), glm::vec3(radius, length, radius));
     return model;

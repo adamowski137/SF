@@ -22,6 +22,7 @@ void CubeSimApp::init() {
     cornerCubeMesh = CubeMeshGenerator::GetCornerCubeMesh();
     gridMesh = CubeMeshGenerator::GetGridMesh(12.0f, 0.5f);
     cylinderMesh = MeshGenerator::GetCylinderMesh(1.0f, 1.0f, 24, 2);
+    coneMesh = CubeMeshGenerator::GetConeMesh(1.0f, 1.0f, 24);
     sphereMesh = MeshGenerator::GetSphereMesh();
     trajectoryMesh = CubeMeshGenerator::CreateTrajectoryMesh();
 
@@ -64,14 +65,14 @@ void CubeSimApp::renderScene() {
         renderer->drawLines(gridMesh, glm::mat4(1.0f), cubeUI->visual.planeColor, 1.0f);
     }
 
-    // 3. Gravity direction vector (arrow) (Krok 1.1)
-    if (cubeUI->visual.showGravityVector && cylinderMesh) {
+    // 3. Gravity direction vector (arrow)
+    if (cubeUI->visual.showGravityVector && cylinderMesh && coneMesh) {
         glm::vec3 gDirNorm = glm::normalize(physics.gravityDir);
         float arrowLen = cubeUI->visual.gravityArrowLength;
         glm::vec3 startPos(0.0f, 0.0f, 0.0f);
         glm::vec3 endPos = startPos + gDirNorm * arrowLen;
         float shaftRadius = 0.015f;
-        float headLen = 0.25f;
+        float headLen = std::min(0.25f, arrowLen * 0.4f);
         float headRadius = 0.05f;
 
         // Shaft
@@ -79,9 +80,8 @@ void CubeSimApp::renderScene() {
         glm::mat4 modelShaft = CubeMeshGenerator::ComputeCylinderTransform(startPos, shaftEnd, shaftRadius);
         renderer->drawMeshPhong(cylinderMesh, modelShaft, cubeUI->visual.gravityColor);
 
-        // Arrowhead (Cone / Cylinder)
-        static auto coneMesh = CubeMeshGenerator::GetConeMesh(headRadius, headLen, 24);
-        glm::mat4 modelCone = CubeMeshGenerator::ComputeConeTransform(endPos, gDirNorm, headLen, 1.0f);
+        // Arrowhead (Cone)
+        glm::mat4 modelCone = CubeMeshGenerator::ComputeConeTransform(endPos, gDirNorm, headLen, headRadius);
         renderer->drawMeshPhong(coneMesh, modelCone, cubeUI->visual.gravityColor);
     }
 

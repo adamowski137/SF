@@ -15,6 +15,7 @@ private:
     std::shared_ptr<Mesh> cornerCubeMesh;
     std::shared_ptr<Mesh> gridMesh;
     std::shared_ptr<Mesh> cylinderMesh;
+    std::shared_ptr<Mesh> coneMesh;
     std::shared_ptr<Mesh> sphereMesh;
     std::shared_ptr<Mesh> trajectoryMesh;
 
