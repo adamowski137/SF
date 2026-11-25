@@ -31,3 +31,4 @@ add_subdirectory(core)
 # --- 4. ADD SIMULATION APPLICATIONS ---
 add_subdirectory(simulations/01_spring)
 add_subdirectory(simulations/02_cube)
+add_subdirectory(simulations/03_jelly)
